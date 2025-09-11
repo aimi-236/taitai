@@ -1,4 +1,5 @@
 // sampleData.ts
+// dateは作成日?
 export const sampleData = [
   {
     id: "1",
@@ -6,7 +7,7 @@ export const sampleData = [
     photo: require("../assets/images/sample_img1.jpeg"),
     place: "東京都文京区2丁目",
     price: "¥2500",
-    date: "2025-06-10",
+    date: "2025-9-12",
     tags: ["水族館", "近場", "行きたい"],
     memo: "静かな空間で綺麗な海の生物を楽しめる。ショップも広い！"
   },
@@ -35,7 +36,7 @@ export const sampleData = [
     title: "箱根 芦ノ湖",
     photo: require("../assets/images/sample_img4.jpeg"),
     place: "神奈川県箱根町",
-    price: "¥3000〜5000",
+    price: "¥10000〜30000",
     date: "2025-10-01",
     tags: ["温泉", "富士山", "日帰り"],
     memo: "遊覧船や温泉も楽しめる人気の観光地"

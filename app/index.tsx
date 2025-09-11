@@ -1,6 +1,6 @@
 import React from "react";
 import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { sampleData } from "./sampleDate"; // サンプルデータを読み込み
+import { sampleData } from "./sampleData"; // サンプルデータを読み込み
 
 export default function IndexScreen({ navigation }: any) {
   return (
