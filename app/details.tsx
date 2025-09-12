@@ -2,7 +2,9 @@ import { Dimensions, Image, Linking, ScrollView, StyleSheet, Text, TouchableOpac
 
 const screenWidth = Dimensions.get('window').width;
 
-const Details = () => {
+const Details = ({ route }: any) => {
+  const { item } = route.params;
+
   const handleBack = () => {
     alert('戻るボタンが押されました');
   };
@@ -23,51 +25,51 @@ const Details = () => {
 
       {/* 画像をヘッダー直下に */}
       <Image
-        source={{
-          uri: 'https://moomcafe.com/serviceimg/gourmet/315401/pg-1751530322245-5343.jpg',
-        }}
+        source={
+          typeof item.photo === "number"
+            ? item.photo // require のローカル画像
+            : { uri: item.photo } // URL の場合
+        }
         style={styles.image}
       />
 
       {/* スクロール部分 */}
       <ScrollView contentContainerStyle={styles.scrollContent}>
         {/* タイトル */}
-        <Text style={styles.title}>MooM Cafe</Text>
+        <Text style={styles.title}>{item.title}</Text>
 
         {/* タグ */}
         <View style={styles.tagsContainer}>
-          <Text style={styles.tag}>#食べたい</Text>
-          <Text style={styles.tag}>#大阪</Text>
+          {item.tags.map((tag: string, index: number) => (
+            <Text key={index} style={styles.tag}>#{tag}</Text>
+          ))}
         </View>
 
         {/* 住所と価格 */}
-        <Text style={styles.address}>〒569-0802 大阪府高槻市 北園町15-15 三精ビル3F</Text>
-        <Text style={styles.price}>1500円～2000円</Text>
+        <Text style={styles.address}>{item.place}</Text>
+        <Text style={styles.price}>{item.price}</Text>
 
-        {/* リンク */}
-        <TouchableOpacity onPress={() => Linking.openURL('https://moomcafe.com/')}>
-          <Text style={styles.link}>https://moomcafe.com/</Text>
-        </TouchableOpacity>
+        {/* リンク（もしあれば） */}
+        {item.link && (
+          <TouchableOpacity onPress={() => Linking.openURL(item.link)}>
+            <Text style={styles.link}>{item.link}</Text>
+          </TouchableOpacity>
+        )}
 
         {/* 詳細見出し */}
         <View style={styles.detailHeader}>
           <Text style={styles.detailTitle}>詳細</Text>
-            <View style={styles.detailLine} />
+          <View style={styles.detailLine} />
         </View>
         {/* 説明文 */}
-        <Text style={styles.text}>
-          高槻市駅から徒歩1分の「MooM Cafe（ムームカフェ）」は、店名の由来でもある「ムー」＝フランス語で“やわらかい”という意味のとおり、ふわふわ食感にこだわったパンケーキが自慢です。
-        </Text>
+        <Text style={styles.text}>{item.memo}</Text>
       </ScrollView>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-  },
+  container: { flex: 1, backgroundColor: '#fff' },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -79,38 +81,13 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#ddd',
   },
-  backArrow: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginRight: 8,
-  },
-  headerActions: {
-    flexDirection: 'row',
-  },
-  action: {
-    fontSize: 16,
-    color: 'blue',
-    marginLeft: 12,
-  },
-  scrollContent: {
-    padding: 16,
-  },
-  image: {
-    width: screenWidth,
-    height: 200,
-    resizeMode: 'cover',
-  },
-  title: {
-    fontSize: 35,
-    fontWeight: 'bold',
-    marginBottom: 8,
-    paddingHorizontal: 5,
-  },
-  tagsContainer: {
-    flexDirection: 'row',
-    marginBottom: 8,
-    paddingHorizontal: 5,
-  },
+  backArrow: { fontSize: 20, fontWeight: 'bold', marginRight: 8 },
+  headerActions: { flexDirection: 'row' },
+  action: { fontSize: 16, color: 'blue', marginLeft: 12 },
+  scrollContent: { padding: 16 },
+  image: { width: screenWidth, height: 200, resizeMode: 'cover' },
+  title: { fontSize: 35, fontWeight: 'bold', marginBottom: 8, paddingHorizontal: 5 },
+  tagsContainer: { flexDirection: 'row', marginBottom: 8, paddingHorizontal: 5 },
   tag: {
     backgroundColor: '#eee',
     paddingVertical: 4,
@@ -119,16 +96,8 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     fontSize: 16,
   },
-  address: {
-    marginBottom: 2,
-    fontSize: 14,
-    paddingHorizontal: 5,
-  },
-  price: {
-    marginBottom: 8,
-    fontSize: 14,
-    paddingHorizontal: 5,
-  },
+  address: { marginBottom: 2, fontSize: 14, paddingHorizontal: 5 },
+  price: { marginBottom: 8, fontSize: 14, paddingHorizontal: 5 },
   link: {
     marginBottom: 8,
     fontSize: 14,
@@ -136,25 +105,10 @@ const styles = StyleSheet.create({
     textDecorationLine: 'underline',
     paddingHorizontal: 5,
   },
-  text: {
-    marginBottom: 8,
-    fontSize: 15,
-    paddingHorizontal: 5,
-  },
-  detailHeader: {
-  marginTop: 16,
-  marginBottom: 8,
-  },
-  detailTitle: {
-  fontSize: 18,
-  fontWeight: 'bold',
-  marginBottom: 4,
-  },
-  detailLine: {
-  height: 2,
-  backgroundColor: '#ddd',
-  width: '100%', // ラインをテキスト幅に合わせる場合は数字や割合調整可
-},
+  text: { marginBottom: 8, fontSize: 15, paddingHorizontal: 5 },
+  detailHeader: { marginTop: 16, marginBottom: 8 },
+  detailTitle: { fontSize: 18, fontWeight: 'bold', marginBottom: 4 },
+  detailLine: { height: 2, backgroundColor: '#ddd', width: '100%' },
 });
 
 export default Details;
