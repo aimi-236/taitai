@@ -1,35 +1,36 @@
+import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { Dimensions, Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
 const screenWidth = Dimensions.get('window').width;
 
-const FormScreen = ({ route, navigation }: any) => {
-  // 編集時は route.params.item にデータが入る
-  const item = route?.params?.item;
+const FormScreen = ({ route }: any) => {
+  const router = useRouter();
 
-  const [title, setTitle] = useState(item?.title ?? '');
-  const [tags, setTags] = useState(item?.tags?.join(',') ?? '');
-  const [address, setAddress] = useState(item?.address ?? '');
-  const [price, setPrice] = useState(item?.price ?? '');
-  const [memo, setMemo] = useState(item?.memo ?? '');
+  // 編集時は route.params に各値が直接入る
+  const [title, setTitle] = useState(route?.params?.title ?? '');
+  const [tags, setTags] = useState(route?.params?.tags ?? '');
+  const [address, setAddress] = useState(route?.params?.place ?? '');
+  const [price, setPrice] = useState(route?.params?.price ?? '');
+  const [memo, setMemo] = useState(route?.params?.memo ?? '');
 
   const handleSave = () => {
     const data = {
       title,
-      tags: tags.split(',').map(t => t.trim()),
+      tags: tags.split(',').map((t: string) => t.trim()),
       address,
       price,
       memo,
     };
     console.log("保存データ:", data);
-    alert(item ? "更新しました！" : "新規作成しました！");
+    alert(route?.params ? "更新しました！" : "新規作成しました！");
 
     // 保存後に戻る
-    navigation.goBack();
+    router.back();
   };
 
   const handleBack = () => {
-    navigation.goBack();
+    router.back();
   };
 
   return (
@@ -42,14 +43,14 @@ const FormScreen = ({ route, navigation }: any) => {
 
         <View style={styles.headerActions}>
           <TouchableOpacity onPress={handleSave}>
-            <Text style={styles.action}>{item ? "更新" : "保存"}</Text>
+            <Text style={styles.action}>{route?.params ? "更新" : "保存"}</Text>
           </TouchableOpacity>
         </View>
       </View>
 
       {/* 画像（編集時は既存のものを表示、なければダミー） */}
       <Image
-        source={{ uri: item?.photo ?? "https://via.placeholder.com/400x200.png?text=画像" }}
+        source={{ uri: route?.params?.photo ?? "https://via.placeholder.com/400x200.png?text=画像" }}
         style={styles.image}
       />
 

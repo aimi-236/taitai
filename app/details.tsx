@@ -1,12 +1,47 @@
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { Dimensions, Image, Linking, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 const screenWidth = Dimensions.get('window').width;
 
-const Details = ({ route }: any) => {
-  const { item } = route.params;
+type ItemType = {
+  id?: string;
+  title?: string;
+  photo?: any;
+  place?: string;
+  price?: string;
+  date?: string;
+  tags?: string[];
+  memo?: string;
+  link?: string;
+};
+
+const Details = () => {
+  const params = useLocalSearchParams();
+  const router = useRouter();
+  // paramsはstring型で渡ってくる場合があるので、必要に応じてparse
+  // FlatListからpush時にparams: itemで渡しているので、propsはそのまま受け取れる
+  // string | string[] → string へ変換する関数
+  const toStr = (v: string | string[] | undefined): string | undefined => {
+    if (Array.isArray(v)) return v[0];
+    return v;
+  };
+  const item: ItemType = {
+    ...params,
+    photo: params.photo,
+    tags: Array.isArray(params.tags)
+      ? params.tags
+      : typeof params.tags === 'string'
+        ? params.tags.split(',')
+        : [],
+    memo: toStr(params.memo),
+    title: toStr(params.title),
+    place: toStr(params.place),
+    price: toStr(params.price),
+    link: toStr(params.link),
+  };
 
   const handleBack = () => {
-    alert('戻るボタンが押されました');
+    router.back();
   };
 
   return (
@@ -18,40 +53,60 @@ const Details = ({ route }: any) => {
         </TouchableOpacity>
 
         <View style={styles.headerActions}>
-          <Text style={styles.action}>編集</Text>
+          <TouchableOpacity
+            onPress={() => {
+              // tagsはカンマ区切り文字列、photoはURLまたは空文字に変換
+              const params = {
+                ...item,
+                tags: Array.isArray(item.tags) ? item.tags.join(',') : item.tags ?? '',
+                photo:
+                  typeof item.photo === 'string'
+                    ? item.photo
+                    : '',
+              };
+              router.push({ pathname: '/FormScreen', params });
+            }}
+          >
+            <Text style={styles.action}>編集</Text>
+          </TouchableOpacity>
           <Text style={styles.action}>削除</Text>
         </View>
       </View>
 
       {/* 画像をヘッダー直下に */}
-      <Image
-        source={
-          typeof item.photo === "number"
-            ? item.photo // require のローカル画像
-            : { uri: item.photo } // URL の場合
-        }
-        style={styles.image}
-      />
+      {/* 画像をヘッダー直下に */}
+      {item.photo ? (
+        <Image
+          source={
+            typeof item.photo === "number"
+              ? item.photo
+              : { uri: item.photo }
+          }
+          style={styles.image}
+        />
+      ) : null}
 
       {/* スクロール部分 */}
       <ScrollView contentContainerStyle={styles.scrollContent}>
         {/* タイトル */}
-        <Text style={styles.title}>{item.title}</Text>
+        <Text style={styles.title}>{item.title ?? ''}</Text>
 
         {/* タグ */}
         <View style={styles.tagsContainer}>
-          {item.tags.map((tag: string, index: number) => (
-            <Text key={index} style={styles.tag}>#{tag}</Text>
-          ))}
+          {Array.isArray(item.tags) && item.tags.length > 0 ? (
+            item.tags.map((tag: string, index: number) => (
+              <Text key={index} style={styles.tag}>#{tag}</Text>
+            ))
+          ) : null}
         </View>
 
         {/* 住所と価格 */}
-        <Text style={styles.address}>{item.place}</Text>
-        <Text style={styles.price}>{item.price}</Text>
+        <Text style={styles.address}>{item.place ?? ''}</Text>
+        <Text style={styles.price}>{item.price ?? ''}</Text>
 
         {/* リンク（もしあれば） */}
         {item.link && (
-          <TouchableOpacity onPress={() => Linking.openURL(item.link)}>
+          <TouchableOpacity onPress={() => Linking.openURL(item.link!)}>
             <Text style={styles.link}>{item.link}</Text>
           </TouchableOpacity>
         )}
