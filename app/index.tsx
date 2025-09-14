@@ -1,37 +1,63 @@
-import React from "react";
-import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { sampleData } from "./sampleData"; // サンプルデータを読み込み
+// app/index.tsx
+
+import React, { useMemo, useState } from "react";
+import {
+  FlatList,
+  Image,
+  StyleSheet,
+  Text,
+  TextInput, // ★ 追加
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { sampleData } from "./sampleData"; // 既存のまま
+import { filterByExactTag } from "./Search"; // ★ Search.js から関数だけ
 
 export default function IndexScreen({ navigation }: any) {
+  const [query, setQuery] = useState("");
+
+  // 完全一致（trimのみ）。空なら全件表示
+  const filtered = useMemo(
+    () => filterByExactTag(sampleData as any[], query),
+    [query]
+  );
+
   return (
     <View style={styles.container}>
-      {/* ヘッダー部分 */}
+      {/* ヘッダー部分（UIは既存のまま） */}
       <View style={styles.header}>
         <TouchableOpacity style={styles.button}>
           <Text>＋</Text>
         </TouchableOpacity>
+
+        {/* 中央の検索枠：見た目は既存のまま、内部だけ TextInput に変更 */}
         <View style={styles.searchBox}>
-          <Text>🔍検索窓</Text>
+          <TextInput
+            placeholder="タグを完全一致で検索（例：水族館）"
+            value={query}
+            onChangeText={setQuery}
+            returnKeyType="search"
+            style={{ paddingVertical: 4, fontSize: 16 }}
+          />
         </View>
+
         <TouchableOpacity style={styles.button}>
           <Text>並び替え</Text>
         </TouchableOpacity>
       </View>
 
-      {/* 一覧表示 */}
+      {/* 一覧表示：検索結果をカードで表示（UIは既存のまま） */}
       <FlatList
-        data={sampleData}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
+        data={filtered}
+        keyExtractor={(item: any) => item.id}
+        renderItem={({ item }: { item: any }) => (
           <TouchableOpacity
             style={styles.card}
             onPress={() => navigation.navigate("Detail", { item })}
           >
             <Image
               source={
-                typeof item.photo === "number"
-                  ? item.photo // require で読み込んだローカル画像
-                  : { uri: item.photo } // URL文字列
+                typeof item.photo === "number" ? item.photo : { uri: item.photo }
               }
               style={styles.photo}
             />
@@ -40,10 +66,11 @@ export default function IndexScreen({ navigation }: any) {
               <Text>{item.place}</Text>
               <Text>{item.price}</Text>
               <Text>{item.date}</Text>
-              <Text>{item.tags.map((tag) => `#${tag} `).join("")}</Text>
+              <Text>{item.tags.map((tag: string) => `#${tag} `).join("")}</Text>
             </View>
           </TouchableOpacity>
         )}
+        keyboardShouldPersistTaps="handled"
       />
     </View>
   );
@@ -57,5 +84,5 @@ const styles = StyleSheet.create({
   card: { flexDirection: "row", padding: 10, borderBottomWidth: 1, borderColor: "#ddd" },
   photo: { width: 80, height: 80, marginRight: 12, borderRadius: 8, resizeMode: "cover" },
   info: { flex: 1 },
-  title: { fontSize: 16, fontWeight: "bold" }
+  title: { fontSize: 16, fontWeight: "bold" },
 });
