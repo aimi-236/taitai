@@ -1,10 +1,22 @@
 import { useRouter } from "expo-router";
-import React from "react";
+import React, { useMemo, useState } from "react";
 import { FlatList, Image, Platform, SafeAreaView, StatusBar, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { sampleData } from "../data/sampleData"; // サンプルデータを読み込み
+import SortButton from "./SortButton";
 
 export default function IndexScreen() {
   const router = useRouter(); // ← 追加
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+
+  const sortedData = useMemo(() => {
+    return [...sampleData].sort((a, b) => {
+      if (sortOrder === "asc") {
+        return Number(a.id) - Number(b.id);
+      } else {
+        return Number(b.id) - Number(a.id);
+      }
+    });
+  }, [sortOrder]);
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -17,14 +29,17 @@ export default function IndexScreen() {
           <View style={styles.searchBox}>
             <Text>🔍検索窓</Text>
           </View>
-          <TouchableOpacity style={styles.button}>
-            <Text>並び替え</Text>
-          </TouchableOpacity>
+
+          {/* 並び替えボタンを外部ファイル化 */}
+          <SortButton
+            sortOrder={sortOrder}
+            onToggle={() => setSortOrder(sortOrder === "asc" ? "desc" : "asc")}
+          />
         </View>
 
         {/* 一覧表示 */}
         <FlatList
-          data={sampleData}
+          data={sortedData}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
             <TouchableOpacity
