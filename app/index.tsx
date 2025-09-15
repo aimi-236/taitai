@@ -1,6 +1,8 @@
+import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from "expo-router";
 import React, { useMemo, useState } from "react";
-import { FlatList, Image, Platform, SafeAreaView, StatusBar, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { FlatList, Image, Platform, StatusBar, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { sampleData } from "../data/sampleData"; // サンプルデータを読み込み
 import SortButton from "./SortButton";
 
@@ -56,10 +58,25 @@ export default function IndexScreen() {
               />
               <View style={styles.info}>
                 <Text style={styles.title}>{item.title}</Text>
-                <Text>{item.place}</Text>
-                <Text>{item.price}</Text>
-                <Text>{item.date}</Text>
-                <Text>{item.tags.map((tag) => `#${tag} `).join("")}</Text>
+                {/* 住所 */}
+                <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 2 }}>
+                  <Ionicons name="location" size={14} color="#555" style={{ marginRight: 4 }} />
+                  <Text>{item.place}</Text>
+                </View>
+
+                {/* 価格 */}
+                <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 2 }}>
+                  <Ionicons name="cash-outline" size={14} color="#555" style={{ marginRight: 4 }} />
+                  <Text>{item.price}</Text>
+                </View>
+
+                <View style={styles.tagsContainer}>
+                  {item.tags && item.tags.length > 0 ? (
+                    item.tags.map((tag: string, index: number) => (
+                      <Text key={index} style={styles.tag}>#{tag}</Text>
+                    ))
+                  ) : null}
+                </View>
               </View>
             </TouchableOpacity>
           )}
@@ -76,6 +93,24 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
     paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+  },
+  tag: {
+    backgroundColor: '#eee',
+    paddingVertical: 4,
+    paddingHorizontal: 8,
+    marginRight: 8,
+    borderRadius: 6,
+    fontSize: 12,
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowOffset: { width: 1, height: 1 },
+    shadowRadius: 2,
+    elevation: 2, // Android影
+  },
+  tagsContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',  // 複数行に折り返し
+    marginTop: 4,
   },
   container: { flex: 1, backgroundColor: "#fff" },
   header: { flexDirection: "row", padding: 10, alignItems: "center" },
