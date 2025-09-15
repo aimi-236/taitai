@@ -1,3 +1,4 @@
+import { Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { Dimensions, Image, Linking, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
@@ -37,6 +38,7 @@ const Details = () => {
     title: toStr(params.title),
     place: toStr(params.place),
     price: toStr(params.price),
+    date: toStr(params.date),
     link: toStr(params.link),
   };
 
@@ -100,9 +102,23 @@ const Details = () => {
           ) : null}
         </View>
 
-        {/* 住所と価格 */}
-        <Text style={styles.address}>{item.place ?? ''}</Text>
-        <Text style={styles.price}>{item.price ?? ''}</Text>
+        {/* 住所 */}
+        <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 2, paddingHorizontal: 5 }}>
+          <Ionicons name="location" size={16} color="#555" style={{ marginRight: 4 }} />
+          <Text style={{ fontSize: 14 }}>{item.place ?? ''}</Text>
+        </View>
+
+          {/* 価格 */}
+        <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 2, paddingHorizontal: 5 }}>
+          <Ionicons name="cash-outline" size={16} color="#555" style={{ marginRight: 4 }} />
+          <Text style={{ fontSize: 14 }}>{item.price ?? ''}</Text>
+        </View>
+
+        {/* 日付 */}
+        <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 8, paddingHorizontal: 5 }}>
+          <Ionicons name="calendar" size={16} color="#555" style={{ marginRight: 4 }} />
+          <Text style={{ fontSize: 14 }}>{item.date ?? ''}</Text>
+        </View>
 
         {/* リンク（もしあれば） */}
         {item.link && (
@@ -143,16 +159,22 @@ const styles = StyleSheet.create({
   image: { width: screenWidth, height: 200, resizeMode: 'cover' },
   title: { fontSize: 35, fontWeight: 'bold', marginBottom: 8, paddingHorizontal: 5 },
   tagsContainer: { flexDirection: 'row', marginBottom: 8, paddingHorizontal: 5 },
-  tag: {
-    backgroundColor: '#eee',
-    paddingVertical: 4,
-    paddingHorizontal: 5,
-    marginRight: 8,
-    borderRadius: 4,
-    fontSize: 16,
-  },
+tag: {
+  backgroundColor: '#eee',
+  paddingVertical: 4,
+  paddingHorizontal: 8,
+  marginRight: 8,
+  borderRadius: 6,
+  fontSize: 14,
+  shadowColor: '#000',
+  shadowOpacity: 0.1,
+  shadowOffset: { width: 1, height: 1 },
+  shadowRadius: 2,
+  elevation: 2, // Android
+},
   address: { marginBottom: 2, fontSize: 14, paddingHorizontal: 5 },
-  price: { marginBottom: 8, fontSize: 14, paddingHorizontal: 5 },
+  price: { marginBottom: 2, fontSize: 14, paddingHorizontal: 5 },
+  date: { marginBottom: 8, fontSize: 14, paddingHorizontal: 5},
   link: {
     marginBottom: 8,
     fontSize: 14,
