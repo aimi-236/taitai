@@ -116,8 +116,8 @@ const styles = StyleSheet.create({
   header: { flexDirection: "row", padding: 10, alignItems: "center" },
   button: { marginHorizontal: 5, padding: 5, backgroundColor: "#eee", borderRadius: 5 },
   searchBox: { flex: 1, backgroundColor: "#f0f0f0", padding: 5, marginHorizontal: 5 },
-  card: { flexDirection: "row", padding: 10, borderBottomWidth: 1, borderColor: "#ddd" },
-  photo: { width: 80, height: 80, marginRight: 12, borderRadius: 8, resizeMode: "cover" },
+  card: { flexDirection: "row", padding: 10, borderBottomWidth: 1, borderColor: "#ddd", alignItems: "center" },
+  photo: { width: 85, height: 85, marginRight: 12, borderRadius: 8, resizeMode: "cover" },
   info: { flex: 1 },
   title: { fontSize: 16, fontWeight: "bold" }
 });
