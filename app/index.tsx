@@ -5,10 +5,12 @@ import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from "react
 import { SafeAreaView } from "react-native-safe-area-context";
 import { sampleData } from "../data/sampleData"; // サンプルデータを読み込み
 import SortButton from "./SortButton";
+import TagFilter from "./TagFilter";
 
 export default function IndexScreen() {
   const router = useRouter(); // ← 追加
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+  const [selectedTags, setSelectedTags] = useState<string[]>([]); //選択タグ
 
   const sortedData = useMemo(() => {
     return [...sampleData].sort((a, b) => {
@@ -19,6 +21,16 @@ export default function IndexScreen() {
       }
     });
   }, [sortOrder]);
+
+  // タグでフィルタリング
+  const filteredData = useMemo(() => {
+    if (selectedTags.length === 0) {
+      return sortedData; // タグ未選択時はすべて表示
+    }
+    return sortedData.filter(item =>
+      selectedTags.every(tag => item.tags?.includes(tag))
+    );
+  }, [sortedData, selectedTags]);
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -39,9 +51,12 @@ export default function IndexScreen() {
           />
         </View>
 
+        {/* ★ タグフィルター */}
+        <TagFilter allItems={sampleData} onChangeSelected={setSelectedTags} />
+
         {/* 一覧表示 */}
         <FlatList
-          data={sortedData}
+          data={filteredData}  //タグ検索でヒットしたもののみ
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
             <TouchableOpacity
@@ -59,9 +74,9 @@ export default function IndexScreen() {
               <View style={styles.info}>
                 <Text style={styles.title}>{item.title}</Text>
                 {/* 住所 */}
-                <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 2 }}>
-                  <Ionicons name="location" size={14} color="#555" style={{ marginRight: 4 }} />
-                  <Text>{item.place}</Text>
+                <View style={{ flexDirection: 'row', alignItems: 'flex-start', marginBottom: 2 }}>
+                  <Ionicons name="location" size={14} color="#555" style={{ marginRight: 4, marginTop: 2 }} />
+                  <Text style={{ flex: 1, flexWrap: "wrap" }}>{item.place}</Text>
                 </View>
 
                 {/* 価格 */}
@@ -110,6 +125,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',  // 複数行に折り返し
     marginTop: 4,
+    rowGap: 8
   },
   container: { flex: 1, backgroundColor: "#fff" },
   header: { flexDirection: "row", padding: 10, alignItems: "center" },
