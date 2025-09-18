@@ -1,4 +1,6 @@
 // sampleData.ts
+
+
 // dateは作成日?
 export const sampleData = [
   {
@@ -68,3 +70,29 @@ export const sampleData = [
     memo: "GHI遊園地とABCのコラボイベントが開催！"
   }
 ];
+
+export const addData = function(title: string, tags: Array<string>, place: string, detail: string) {
+  sampleData.push({
+    id: '${getMaxId() + 1}',
+    title: title,
+    photo: '',
+    place: place,
+    price: '',
+    link: '',
+    date: '',
+    tags: tags,
+    memo: detail
+    }
+  )
+}
+
+const getMaxId = function() {
+  let maxId = 0;
+  for (let data of sampleData) {
+    if (maxId < parseInt(data["id"])) {
+      maxId = parseInt(data["id"]);
+    }
+  }
+
+  return maxId
+}

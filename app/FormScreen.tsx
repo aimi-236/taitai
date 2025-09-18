@@ -1,3 +1,4 @@
+import { addData } from '@/data/sampleData';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { Dimensions, Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
@@ -23,6 +24,7 @@ const FormScreen = ({ route }: any) => {
       memo,
     };
     console.log("保存データ:", data);
+    addData(title, tags, address, memo);
     alert(route?.params ? "更新しました！" : "新規作成しました！");
 
     // 保存後に戻る
