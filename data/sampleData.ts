@@ -73,7 +73,7 @@ export const sampleData = [
 
 export const addData = function(title: string, tags: Array<string>, place: string, detail: string) {
   sampleData.push({
-    id: '${getMaxId() + 1}',
+    id: String(getMaxId() + 1),
     title: title,
     photo: '',
     place: place,
