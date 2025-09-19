@@ -28,12 +28,12 @@ export default function IndexScreen() {
   // タグでフィルタリング
   const filteredData = useMemo(() => {
     if (selectedTags.length === 0) {
-      return sortedData; // タグ未選択時はすべて表示
+      return listData; // タグ未選択時はすべて表示
     }
-    return sortedData.filter(item =>
+    return listData.filter(item =>
       selectedTags.every(tag => item.tags?.includes(tag))
     );
-  }, [sortedData, selectedTags]);
+  }, [listData, selectedTags]);
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -137,7 +137,6 @@ const styles = StyleSheet.create({
     rowGap: 8
 
   },
-  tagsContainer: { flexDirection: 'row', flexWrap: 'wrap', marginTop: 4 },
   container: { flex: 1, backgroundColor: "#fff" },
   header: { flexDirection: "row", padding: 10, alignItems: "center" },
   button: { marginHorizontal: 5, padding: 5, backgroundColor: "#eee", borderRadius: 5 },
