@@ -6,11 +6,13 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { searchAllFields } from "../Search"; // ★ 追加
 import { sampleData } from "../data/sampleData";
 import SortButton from "./SortButton";
+import TagFilter from "./TagFilter";
 
 export default function IndexScreen() {
   const router = useRouter();
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
-  const [query, setQuery] = useState<string>(""); // ★ 追加
+  const [query, setQuery] = useState<string>(""); //追加
+  const [selectedTags, setSelectedTags] = useState<string[]>([]); //選択タグ
 
   // ★ 入力があれば「関連度順（総合検索）」/ 空なら従来のIDソート
   const listData = useMemo(() => {
@@ -22,6 +24,16 @@ export default function IndexScreen() {
       sortOrder === "asc" ? Number(a.id) - Number(b.id) : Number(b.id) - Number(a.id)
     );
   }, [query, sortOrder]);
+
+  // タグでフィルタリング
+  const filteredData = useMemo(() => {
+    if (selectedTags.length === 0) {
+      return sortedData; // タグ未選択時はすべて表示
+    }
+    return sortedData.filter(item =>
+      selectedTags.every(tag => item.tags?.includes(tag))
+    );
+  }, [sortedData, selectedTags]);
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -49,9 +61,13 @@ export default function IndexScreen() {
           />
         </View>
 
-        {/* 一覧表示（data を listData に差し替え） */}
+        {/* ★ タグフィルター */}
+        <TagFilter allItems={sampleData} onChangeSelected={setSelectedTags} />
+
+        {/* 一覧表示 */}
         <FlatList
-          data={listData}
+          data={filteredData}  //タグ検索でヒットしたもののみ
+
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
             <TouchableOpacity
@@ -69,9 +85,11 @@ export default function IndexScreen() {
               <View style={styles.info}>
                 <Text style={styles.title}>{item.title}</Text>
 
-                <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 2 }}>
-                  <Ionicons name="location" size={14} color="#555" style={{ marginRight: 4 }} />
-                  <Text>{item.place}</Text>
+                {/* 住所 */}
+                <View style={{ flexDirection: 'row', alignItems: 'flex-start', marginBottom: 2 }}>
+                  <Ionicons name="location" size={14} color="#555" style={{ marginRight: 4, marginTop: 2 }} />
+                  <Text style={{ flex: 1, flexWrap: "wrap" }}>{item.place}</Text>
+
                 </View>
 
                 <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 2 }}>
@@ -99,10 +117,25 @@ export default function IndexScreen() {
 const styles = StyleSheet.create({
   safeArea: { flex: 1, backgroundColor: "#fff" },
   tag: {
-    backgroundColor: '#eee', paddingVertical: 4, paddingHorizontal: 8,
-    marginRight: 8, borderRadius: 6, fontSize: 12,
-    shadowColor: '#000', shadowOpacity: 0.1, shadowOffset: { width: 1, height: 1 },
-    shadowRadius: 2, elevation: 2,
+
+    backgroundColor: '#eee',
+    paddingVertical: 4,
+    paddingHorizontal: 8,
+    marginRight: 8,
+    borderRadius: 6,
+    fontSize: 12,
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowOffset: { width: 1, height: 1 },
+    shadowRadius: 2,
+    elevation: 2, // Android影
+  },
+  tagsContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',  // 複数行に折り返し
+    marginTop: 4,
+    rowGap: 8
+
   },
   tagsContainer: { flexDirection: 'row', flexWrap: 'wrap', marginTop: 4 },
   container: { flex: 1, backgroundColor: "#fff" },
