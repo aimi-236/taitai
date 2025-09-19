@@ -1,3 +1,4 @@
+import * as ImagePicker from 'expo-image-picker';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { Dimensions, Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
@@ -13,6 +14,21 @@ const FormScreen = ({ route }: any) => {
   const [address, setAddress] = useState(route?.params?.place ?? '');
   const [price, setPrice] = useState(route?.params?.price ?? '');
   const [memo, setMemo] = useState(route?.params?.memo ?? '');
+  const [link, setLink] = useState(route?.params?.link ?? '');
+  const [photo, setPhoto] = useState(route?.params?.photo ?? '');
+
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      setPhoto(result.assets[0].uri);
+    }
+  };
 
   const handleSave = () => {
     const data = {
@@ -21,6 +37,8 @@ const FormScreen = ({ route }: any) => {
       address,
       price,
       memo,
+      link,
+      photo,
     };
     console.log("保存データ:", data);
     alert(route?.params ? "更新しました！" : "新規作成しました！");
@@ -48,11 +66,16 @@ const FormScreen = ({ route }: any) => {
         </View>
       </View>
 
-      {/* 画像（編集時は既存のものを表示、なければダミー） */}
+      {/* 📷 写真プレビュー（なければダミー画像） */}
       <Image
-        source={{ uri: route?.params?.photo ?? "https://via.placeholder.com/400x200.png?text=画像" }}
+        source={{ uri: photo || "https://via.placeholder.com/400x200.png?text=画像" }}
         style={styles.image}
       />
+
+      {/* 写真追加ボタン */}
+      <TouchableOpacity onPress={pickImage} style={styles.photoButton}>
+        <Text style={{ color: "black" }}>写真を追加</Text>
+      </TouchableOpacity>
 
       {/* 入力フォーム */}
       <ScrollView contentContainerStyle={styles.scrollContent}>
@@ -82,6 +105,13 @@ const FormScreen = ({ route }: any) => {
           placeholder="価格を入力"
           value={price}
           onChangeText={setPrice}
+        />
+
+        <TextInput
+          style={styles.input}
+          placeholder="URLを入力"
+          value={link}
+          onChangeText={setLink}
         />
 
         <View style={styles.detailHeader}>
@@ -119,6 +149,7 @@ const styles = StyleSheet.create({
   action: { fontSize: 16, color: 'blue', marginLeft: 12 },
   scrollContent: { padding: 16 },
   image: { width: screenWidth, height: 200, resizeMode: 'cover', marginBottom: 16 },
+  photoButton: { alignItems: 'center', marginBottom: 16 },
   inputTitle: {
     fontSize: 24,
     fontWeight: 'bold',
