@@ -141,8 +141,7 @@ function norm(v: any) {
       if (allTokensHit) score += 30;   // 全トークンがどこかにヒット
       score += tokensHit * 2;          // 多くの語を満たすほど微加点
   
-      return { item, ok: tokensHit > 0, score };
-    });
+      return { item, ok: allTokensHit, score };    });
   
     return scored
       .filter(s => s.ok)
