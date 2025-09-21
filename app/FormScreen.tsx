@@ -1,7 +1,9 @@
 import * as ImagePicker from 'expo-image-picker';
 import { useRouter } from 'expo-router';
-import { useState } from 'react';
-import { Dimensions, Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import React, { useMemo, useRef, useState } from 'react';
+import { Dimensions, Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { sampleData } from "../data/sampleData"; //既存タグ取得用
 
 const screenWidth = Dimensions.get('window').width;
 
@@ -9,13 +11,60 @@ const FormScreen = ({ route }: any) => {
   const router = useRouter();
 
   // 編集時は route.params に各値が直接入る
+  const rawTags = route?.params?.tags;
+
+  // まずここで配列に正規化（文字列で来たときは split）
+  const initialTags: string[] = Array.isArray(rawTags)
+    ? rawTags
+    : typeof rawTags === 'string' && rawTags.length > 0
+      ? rawTags.split(',').map(t => t.trim()).filter(Boolean)
+      : [];
+
+  // 編集時は route.params に各値が直接入る
   const [title, setTitle] = useState(route?.params?.title ?? '');
-  const [tags, setTags] = useState(route?.params?.tags ?? '');
-  const [address, setAddress] = useState(route?.params?.place ?? '');
+  const [tags, setTags] = useState<string[]>(initialTags);
+  const [tagInput, setTagInput] = useState(''); //入力中のタグ
+  const [place, setAddress] = useState(route?.params?.place ?? '');
   const [price, setPrice] = useState(route?.params?.price ?? '');
   const [memo, setMemo] = useState(route?.params?.memo ?? '');
   const [link, setLink] = useState(route?.params?.link ?? '');
-  const [photo, setPhoto] = useState(route?.params?.photo ?? '');
+  const [photo, setPhoto] = useState(route?.params?.photo ?? null);
+
+  //既存タグ一覧をユニーク化
+  const existingTags = useMemo(() => {
+    const allTags = sampleData.flatMap(item => item.tags || []);
+    return Array.from(new Set(allTags));
+  }, []);
+
+  // ひらがな → カタカナ
+  const hiraToKana = (str: string) =>
+    str.replace(/[\u3041-\u3096]/g, ch =>
+      String.fromCharCode(ch.charCodeAt(0) + 0x60)
+    );
+
+  // カタカナ → ひらがな
+  const kanaToHira = (str: string) =>
+    str.replace(/[\u30A1-\u30F6]/g, ch =>
+      String.fromCharCode(ch.charCodeAt(0) - 0x60)
+    );
+
+  //候補の絞り込み
+  const suggestions = useMemo(() => {
+    if (tagInput.trim() === '') return [];
+
+    const inputHira = kanaToHira(tagInput);
+    const inputKana = hiraToKana(tagInput);
+
+    return existingTags.filter(tag => {
+      const tagHira = kanaToHira(tag);
+      const tagKana = hiraToKana(tag);
+
+      return (
+        (tagHira.startsWith(inputHira) || tagKana.startsWith(inputKana)) &&
+        !tags.includes(tag)
+      );
+    });
+  }, [tagInput, existingTags, tags]);
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -33,8 +82,8 @@ const FormScreen = ({ route }: any) => {
   const handleSave = () => {
     const data = {
       title,
-      tags: tags.split(',').map((t: string) => t.trim()),
-      address,
+      tags,
+      place,
       price,
       memo,
       link,
@@ -51,8 +100,26 @@ const FormScreen = ({ route }: any) => {
     router.back();
   };
 
+  const tagInputRef = useRef<TextInput>(null);
+
+  const addTag = (tag: string) => {
+    if (!tag.trim()) return;
+    if (!tags.includes(tag)) {
+      setTags([...tags, tag]);
+    }
+    setTagInput('');
+    tagInputRef.current?.focus(); //再フォーカス
+  };
+
   return (
-    <View style={styles.container}>
+    <KeyboardAwareScrollView
+      contentContainerStyle={styles.scrollContent}
+      enableOnAndroid={true}
+      extraScrollHeight={60}   // キーボードが出たときの余白
+      keyboardShouldPersistTaps="handled"
+      keyboardOpeningTime={0}
+    >
+
       {/* ヘッダー */}
       <View style={styles.header}>
         <TouchableOpacity onPress={handleBack}>
@@ -66,68 +133,112 @@ const FormScreen = ({ route }: any) => {
         </View>
       </View>
 
-      {/* 📷 写真プレビュー（なければダミー画像） */}
-      <Image
-        source={{ uri: photo || "https://via.placeholder.com/400x200.png?text=画像" }}
-        style={styles.image}
-      />
-
-      {/* 写真追加ボタン */}
-      <TouchableOpacity onPress={pickImage} style={styles.photoButton}>
-        <Text style={{ color: "black" }}>写真を追加</Text>
+      {/* 写真プレビュー（タップでアップロード） */}
+      <TouchableOpacity onPress={pickImage} style={{ marginHorizontal: -16 }}>
+        {photo ? (
+          <Image source={{ uri: photo }} style={styles.image} resizeMode="cover" />
+        ) : (
+          <View
+            style={[
+              styles.image,
+              { justifyContent: "center", backgroundColor: "#c0c0c0" }
+            ]}
+          >
+            <Text style={{ color: "#fff", fontSize: 18, textAlign: "center", width: "100%" }}>
+              Upload image
+            </Text>
+          </View>
+        )}
       </TouchableOpacity>
 
       {/* 入力フォーム */}
-      <ScrollView contentContainerStyle={styles.scrollContent}>
-        <TextInput
-          style={styles.inputTitle}
-          placeholder="タイトルを入力"
-          value={title}
-          onChangeText={setTitle}
-        />
+      <TextInput
+        style={styles.inputTitle}
+        placeholder="タイトルを入力"
+        value={title}
+        onChangeText={setTitle}
+      />
 
+      {/* タグ入力欄（タグ + 入力ボックス一体型） */}
+      <View style={styles.tagInputRow}>
+        {tags.map((tag) => (
+          <View key={tag} style={styles.tag}>
+            <Text>#{tag}</Text>
+          </View>
+        ))}
         <TextInput
-          style={styles.input}
-          placeholder="タグ（カンマ区切りで入力）"
-          value={tags}
-          onChangeText={setTags}
-        />
+          ref={tagInputRef}
+          style={styles.tagTextInput}
+          placeholder="タグを入力"
+          value={tagInput}
+          onChangeText={setTagInput}
 
-        <TextInput
-          style={styles.input}
-          placeholder="住所を入力"
-          value={address}
-          onChangeText={setAddress}
-        />
 
-        <TextInput
-          style={styles.input}
-          placeholder="価格を入力"
-          value={price}
-          onChangeText={setPrice}
-        />
+          onSubmitEditing={() => {
+            addTag(tagInput);
+            // blurが走る直後にフォーカスを復帰
+            requestAnimationFrame(() => {
+              tagInputRef.current?.focus();
+            });
+          }}
 
-        <TextInput
-          style={styles.input}
-          placeholder="URLを入力"
-          value={link}
-          onChangeText={setLink}
+          onKeyPress={({ nativeEvent }) => {
+            if (nativeEvent.key === 'Backspace' && tagInput === '') {
+              setTags(tags.slice(0, -1)); // ← バックスペースで直前のタグ削除
+            }
+          }}
         />
+      </View>
 
-        <View style={styles.detailHeader}>
-          <Text style={styles.detailTitle}>詳細</Text>
-          <View style={styles.detailLine} />
+      {/* 候補リスト */}
+      {suggestions.length > 0 && (
+        <View style={styles.suggestionBox}>
+          {suggestions.map(item => (
+            <TouchableOpacity
+              key={item}
+              style={styles.suggestion}
+              onPress={() => addTag(item)}
+            >
+              <Text>{item}</Text>
+            </TouchableOpacity>
+          ))}
         </View>
+      )}
 
-        <TextInput
-          style={[styles.input, styles.memo]}
-          placeholder="説明文を入力"
-          value={memo}
-          onChangeText={setMemo}
-          multiline
-        />
-      </ScrollView>
-    </View>
+      <TextInput
+        style={styles.input}
+        placeholder="住所を入力"
+        value={place}
+        onChangeText={setAddress}
+      />
+
+      <TextInput
+        style={styles.input}
+        placeholder="価格を入力"
+        value={price}
+        onChangeText={setPrice}
+      />
+
+      <TextInput
+        style={styles.input}
+        placeholder="URLを入力"
+        value={link}
+        onChangeText={setLink}
+      />
+
+      <View style={styles.detailHeader}>
+        <Text style={styles.detailTitle}>詳細</Text>
+        <View style={styles.detailLine} />
+      </View>
+
+      <TextInput
+        style={[styles.input, styles.memo]}
+        placeholder="説明文を入力"
+        value={memo}
+        onChangeText={setMemo}
+        multiline
+      />
+    </KeyboardAwareScrollView>
   );
 };
 
@@ -137,18 +248,18 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: '#eee',
+    backgroundColor: '#fff',
     paddingTop: 40,
-    paddingHorizontal: 16,
+    paddingHorizontal: 8,
     paddingBottom: 12,
     borderBottomWidth: 1,
     borderBottomColor: '#ddd',
   },
   backArrow: { fontSize: 20, fontWeight: 'bold', marginRight: 8 },
   headerActions: { flexDirection: 'row' },
-  action: { fontSize: 16, color: 'blue', marginLeft: 12 },
+  action: { fontSize: 16, color: 'black', marginLeft: 12 },
   scrollContent: { padding: 16 },
-  image: { width: screenWidth, height: 200, resizeMode: 'cover', marginBottom: 16 },
+  image: { width: screenWidth, height: 200, marginBottom: 16 },
   photoButton: { alignItems: 'center', marginBottom: 16 },
   inputTitle: {
     fontSize: 24,
@@ -164,6 +275,43 @@ const styles = StyleSheet.create({
     borderBottomColor: '#ccc',
     marginBottom: 12,
     padding: 4,
+  },
+  suggestionBox: {
+    backgroundColor: "#fff",
+    borderWidth: 1,
+    borderColor: "#ddd",
+    borderRadius: 4,
+    marginBottom: 8,
+  },
+  suggestion: {
+    padding: 8,
+    backgroundColor: "#f0f0f0",
+    borderBottomWidth: 1,
+    borderColor: "#ddd",
+  },
+  tagContainer: { flexDirection: "row", flexWrap: "wrap", marginTop: 8 },
+  tag: {
+    backgroundColor: "#eee",
+    paddingVertical: 4,
+    paddingHorizontal: 8,
+    margin: 4,
+    borderRadius: 6,
+  },
+  tagInputRow: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    alignItems: "center",
+    borderWidth: 1,
+    borderColor: "#ccc",
+    padding: 4,
+    borderRadius: 6,
+    marginBottom: 12,
+  },
+  tagTextInput: {
+    minWidth: 60,
+    flex: 1,
+    padding: 4,
+    fontSize: 16,
   },
   memo: {
     height: 100,

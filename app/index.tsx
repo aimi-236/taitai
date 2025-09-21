@@ -135,7 +135,6 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',  // 複数行に折り返し
     marginTop: 4,
     rowGap: 8
-
   },
   container: { flex: 1, backgroundColor: "#fff" },
   header: { flexDirection: "row", padding: 10, alignItems: "center" },
