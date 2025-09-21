@@ -103,12 +103,12 @@ const Details = () => {
         </View>
 
         {/* 住所 */}
-        <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 2, paddingHorizontal: 5 }}>
+        <View style={{ flexDirection: 'row', alignItems: 'flex-start', marginBottom: 2, paddingHorizontal: 5 }}>
           <Ionicons name="location" size={16} color="#555" style={{ marginRight: 4 }} />
           <Text style={{ fontSize: 14 }}>{item.place ?? ''}</Text>
         </View>
 
-          {/* 価格 */}
+        {/* 価格 */}
         <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 2, paddingHorizontal: 5 }}>
           <Ionicons name="cash-outline" size={16} color="#555" style={{ marginRight: 4 }} />
           <Text style={{ fontSize: 14 }}>{item.price ?? ''}</Text>
@@ -158,23 +158,23 @@ const styles = StyleSheet.create({
   scrollContent: { padding: 16 },
   image: { width: screenWidth, height: 200, resizeMode: 'cover' },
   title: { fontSize: 35, fontWeight: 'bold', marginBottom: 8, paddingHorizontal: 5 },
-  tagsContainer: { flexDirection: 'row', marginBottom: 8, paddingHorizontal: 5 },
-tag: {
-  backgroundColor: '#eee',
-  paddingVertical: 4,
-  paddingHorizontal: 8,
-  marginRight: 8,
-  borderRadius: 6,
-  fontSize: 14,
-  shadowColor: '#000',
-  shadowOpacity: 0.1,
-  shadowOffset: { width: 1, height: 1 },
-  shadowRadius: 2,
-  elevation: 2, // Android
-},
+  tagsContainer: { flexDirection: 'row', flexWrap: 'wrap', marginBottom: 8, paddingHorizontal: 5, rowGap: 8 },
+  tag: {
+    backgroundColor: '#eee',
+    paddingVertical: 4,
+    paddingHorizontal: 8,
+    marginRight: 8,
+    borderRadius: 6,
+    fontSize: 14,
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowOffset: { width: 1, height: 1 },
+    shadowRadius: 2,
+    elevation: 2, // Android
+  },
   address: { marginBottom: 2, fontSize: 14, paddingHorizontal: 5 },
   price: { marginBottom: 2, fontSize: 14, paddingHorizontal: 5 },
-  date: { marginBottom: 8, fontSize: 14, paddingHorizontal: 5},
+  date: { marginBottom: 8, fontSize: 14, paddingHorizontal: 5 },
   link: {
     marginBottom: 8,
     fontSize: 14,

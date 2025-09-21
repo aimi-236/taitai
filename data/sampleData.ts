@@ -170,7 +170,7 @@ export const sampleData = [
     id: "16",
     title: "千葉の観光",
     photo: "https://maruchiba.jp/lsc/upfile/spot/0001/0409/10409_1_l.jpg",
-    place: "千葉市中央区富士見2丁目3番1号塚本大千葉ビル9階",
+    place: "千葉市中央区富士見2丁目3番1号塚本大千葉ビル9階長い住所",
     price: "",
     link: "https://maruchiba.jp/spot/detail_10409.html",
     date: "2025-11-05",

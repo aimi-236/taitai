@@ -9,10 +9,19 @@ type Props = {
 const TagFilter: React.FC<Props> = ({ allItems, onChangeSelected }) => {
   const [selected, setSelected] = useState<string[]>([]);
 
-  // 全てのタグをユニーク化
-  const allTags = useMemo(() => {
-    const tags = allItems.flatMap(item => item.tags || []);
-    return Array.from(new Set(tags));
+  //タグごとの出現回数を計算
+  const tagCounts = useMemo(() => {
+    const counts: Record<string, number> = {};
+    allItems.forEach(item => {
+      (item.tags || []).forEach(tag => {
+        counts[tag] = (counts[tag] || 0) + 1;
+      });
+    });
+
+    //出現回数の多い順にソート
+    return Object.entries(counts)
+      .sort((a, b) => b[1] - a[1]) // 降順ソート
+      .map(([tag, count]) => ({ tag, count }));
   }, [allItems]);
 
   const toggleTag = (tag: string) => {
@@ -32,14 +41,14 @@ const TagFilter: React.FC<Props> = ({ allItems, onChangeSelected }) => {
         style={{ maxHeight: 100 }} // タグ3段くらいまで表示
         contentContainerStyle={styles.tagList}
       >
-        {allTags.map((tag) => (
+        {tagCounts.map(({ tag, count }) => (
           <TouchableOpacity
             key={tag}
             style={[styles.tag, selected.includes(tag) && styles.tagSelected]}
             onPress={() => toggleTag(tag)}
           >
             <Text style={selected.includes(tag) ? styles.textSelected : styles.text}>
-              #{tag}
+              #{tag} ({count})
             </Text>
           </TouchableOpacity>
         ))}
