@@ -1,7 +1,7 @@
 import * as ImagePicker from 'expo-image-picker';
 import { useRouter } from 'expo-router';
 import React, { useMemo, useRef, useState } from 'react';
-import { Dimensions, Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Dimensions, Image, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { sampleData } from "../data/sampleData"; //既存タグ取得用
 
@@ -112,15 +112,8 @@ const FormScreen = ({ route }: any) => {
   };
 
   return (
-    <KeyboardAwareScrollView
-      contentContainerStyle={styles.scrollContent}
-      enableOnAndroid={true}
-      extraScrollHeight={60}   // キーボードが出たときの余白
-      keyboardShouldPersistTaps="handled"
-      keyboardOpeningTime={0}
-    >
-
-      {/* ヘッダー */}
+    <SafeAreaView style={styles.container}>
+      {/* ヘッダー（固定表示したい部分） */}
       <View style={styles.header}>
         <TouchableOpacity onPress={handleBack}>
           <Text style={styles.backArrow}>←</Text>
@@ -133,112 +126,122 @@ const FormScreen = ({ route }: any) => {
         </View>
       </View>
 
-      {/* 写真プレビュー（タップでアップロード） */}
-      <TouchableOpacity onPress={pickImage} style={{ marginHorizontal: -16 }}>
-        {photo ? (
-          <Image source={{ uri: photo }} style={styles.image} resizeMode="cover" />
-        ) : (
-          <View
-            style={[
-              styles.image,
-              { justifyContent: "center", backgroundColor: "#c0c0c0" }
-            ]}
-          >
-            <Text style={{ color: "#fff", fontSize: 18, textAlign: "center", width: "100%" }}>
-              Upload image
-            </Text>
+      {/* 入力部分はスクロール可能にする */}
+      <KeyboardAwareScrollView
+        contentContainerStyle={styles.scrollContent}
+        enableOnAndroid={true}
+        extraScrollHeight={60}   // キーボードが出たときの余白
+        keyboardShouldPersistTaps="handled"
+        keyboardOpeningTime={0}
+      >
+
+        {/* 写真プレビュー（タップでアップロード） */}
+        <TouchableOpacity onPress={pickImage} style={{ marginHorizontal: -16 }}>
+          {photo ? (
+            <Image source={{ uri: photo }} style={styles.image} resizeMode="cover" />
+          ) : (
+            <View
+              style={[
+                styles.image,
+                { justifyContent: "center", backgroundColor: "#c0c0c0" }
+              ]}
+            >
+              <Text style={{ color: "#fff", fontSize: 18, textAlign: "center", width: "100%" }}>
+                Upload image
+              </Text>
+            </View>
+          )}
+        </TouchableOpacity>
+
+        {/* 入力フォーム */}
+        <TextInput
+          style={styles.inputTitle}
+          placeholder="タイトルを入力"
+          value={title}
+          onChangeText={setTitle}
+        />
+
+        {/* タグ入力欄（タグ + 入力ボックス一体型） */}
+        <View style={styles.tagInputRow}>
+          {tags.map((tag) => (
+            <View key={tag} style={styles.tag}>
+              <Text>#{tag}</Text>
+            </View>
+          ))}
+          <TextInput
+            ref={tagInputRef}
+            style={styles.tagTextInput}
+            placeholder="タグを入力"
+            value={tagInput}
+            onChangeText={setTagInput}
+
+
+            onSubmitEditing={() => {
+              addTag(tagInput);
+              // blurが走る直後にフォーカスを復帰
+              requestAnimationFrame(() => {
+                tagInputRef.current?.focus();
+              });
+            }}
+
+            onKeyPress={({ nativeEvent }) => {
+              if (nativeEvent.key === 'Backspace' && tagInput === '') {
+                setTags(tags.slice(0, -1)); // ← バックスペースで直前のタグ削除
+              }
+            }}
+          />
+        </View>
+
+        {/* 候補リスト */}
+        {suggestions.length > 0 && (
+          <View style={styles.suggestionBox}>
+            {suggestions.map(item => (
+              <TouchableOpacity
+                key={item}
+                style={styles.suggestion}
+                onPress={() => addTag(item)}
+              >
+                <Text>{item}</Text>
+              </TouchableOpacity>
+            ))}
           </View>
         )}
-      </TouchableOpacity>
 
-      {/* 入力フォーム */}
-      <TextInput
-        style={styles.inputTitle}
-        placeholder="タイトルを入力"
-        value={title}
-        onChangeText={setTitle}
-      />
-
-      {/* タグ入力欄（タグ + 入力ボックス一体型） */}
-      <View style={styles.tagInputRow}>
-        {tags.map((tag) => (
-          <View key={tag} style={styles.tag}>
-            <Text>#{tag}</Text>
-          </View>
-        ))}
         <TextInput
-          ref={tagInputRef}
-          style={styles.tagTextInput}
-          placeholder="タグを入力"
-          value={tagInput}
-          onChangeText={setTagInput}
-
-
-          onSubmitEditing={() => {
-            addTag(tagInput);
-            // blurが走る直後にフォーカスを復帰
-            requestAnimationFrame(() => {
-              tagInputRef.current?.focus();
-            });
-          }}
-
-          onKeyPress={({ nativeEvent }) => {
-            if (nativeEvent.key === 'Backspace' && tagInput === '') {
-              setTags(tags.slice(0, -1)); // ← バックスペースで直前のタグ削除
-            }
-          }}
+          style={styles.input}
+          placeholder="住所を入力"
+          value={place}
+          onChangeText={setAddress}
         />
-      </View>
 
-      {/* 候補リスト */}
-      {suggestions.length > 0 && (
-        <View style={styles.suggestionBox}>
-          {suggestions.map(item => (
-            <TouchableOpacity
-              key={item}
-              style={styles.suggestion}
-              onPress={() => addTag(item)}
-            >
-              <Text>{item}</Text>
-            </TouchableOpacity>
-          ))}
+        <TextInput
+          style={styles.input}
+          placeholder="価格を入力"
+          value={price}
+          onChangeText={setPrice}
+        />
+
+        <TextInput
+          style={styles.input}
+          placeholder="URLを入力"
+          value={link}
+          onChangeText={setLink}
+        />
+
+        <View style={styles.detailHeader}>
+          <Text style={styles.detailTitle}>詳細</Text>
+          <View style={styles.detailLine} />
         </View>
-      )}
 
-      <TextInput
-        style={styles.input}
-        placeholder="住所を入力"
-        value={place}
-        onChangeText={setAddress}
-      />
-
-      <TextInput
-        style={styles.input}
-        placeholder="価格を入力"
-        value={price}
-        onChangeText={setPrice}
-      />
-
-      <TextInput
-        style={styles.input}
-        placeholder="URLを入力"
-        value={link}
-        onChangeText={setLink}
-      />
-
-      <View style={styles.detailHeader}>
-        <Text style={styles.detailTitle}>詳細</Text>
-        <View style={styles.detailLine} />
-      </View>
-
-      <TextInput
-        style={[styles.input, styles.memo]}
-        placeholder="説明文を入力"
-        value={memo}
-        onChangeText={setMemo}
-        multiline
-      />
-    </KeyboardAwareScrollView>
+        <TextInput
+          style={[styles.input, styles.memo]}
+          placeholder="説明文を入力"
+          value={memo}
+          onChangeText={setMemo}
+          multiline
+        />
+      </KeyboardAwareScrollView>
+    </SafeAreaView>
   );
 };
 
