@@ -65,6 +65,12 @@ const Details = () => {
                   typeof item.photo === 'string'
                     ? item.photo
                     : '',
+                title: item.title,
+                place: item.place,
+                price: item.price,
+                date: item.date,
+                memo: item.memo,
+                link: item.link
               };
               router.push({ pathname: '/FormScreen', params });
             }}
