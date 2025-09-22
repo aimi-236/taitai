@@ -60,7 +60,7 @@ const FormScreen = ({ route }: any) => {
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <TextInput
           style={styles.inputTitle}
-          placeholder="タイトルを入力"
+          placeholder={title? title : "タイトルを入力"}
           value={title}
           onChangeText={setTitle}
         />
