@@ -25,7 +25,7 @@ export default function IndexScreen() {
       <View style={styles.container}>
         {/* ヘッダー部分 */}
         <View style={styles.header}>
-          <TouchableOpacity style={styles.button} onPress={() => router.push('/FormScreen')}>
+          <TouchableOpacity style={styles.button} onPress={() => router.push({ pathname : '/FormScreen', params: {from : '/index'} })}>
             <Text>＋</Text>
           </TouchableOpacity>
           <View style={styles.searchBox}>

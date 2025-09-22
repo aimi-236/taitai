@@ -70,7 +70,8 @@ const Details = () => {
                 price: item.price,
                 date: item.date,
                 memo: item.memo,
-                link: item.link
+                link: item.link,
+                from: '/details'
               };
               router.push({ pathname: '/FormScreen', params });
             }}
