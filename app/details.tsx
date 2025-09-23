@@ -83,6 +83,7 @@ const Details = () => {
 
           <TouchableOpacity onPress= {() => {
               deleteData(item.id ?? '');
+              handleBack();
             }
           }>
             <Text style={styles.action}>削除</Text>
