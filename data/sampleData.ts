@@ -115,3 +115,8 @@ const getMaxId = function() {
 
   return maxId
 }
+
+export const getCopySampleData = function() {
+  //配列がたくさん生成されるけどガベージコレクションを信頼することにする
+  return structuredClone(sampleData);
+}

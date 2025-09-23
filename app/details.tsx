@@ -1,6 +1,8 @@
-import { deleteData } from '@/data/sampleData';
+import { deleteData, getCopySampleData } from '@/data/sampleData';
 import { Ionicons } from '@expo/vector-icons';
+import { useFocusEffect } from '@react-navigation/native';
 import { useLocalSearchParams, useRouter } from "expo-router";
+import React from 'react';
 import { Dimensions, Image, Linking, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 const screenWidth = Dimensions.get('window').width;
@@ -27,22 +29,43 @@ const Details = () => {
     if (Array.isArray(v)) return v[0];
     return v;
   };
+  
   const item: ItemType = {
-    ...params,
-    photo: params.photo,
-    tags: Array.isArray(params.tags)
-      ? params.tags
-      : typeof params.tags === 'string'
-        ? params.tags.split(',')
-        : [],
-    memo: toStr(params.memo),
-    title: toStr(params.title),
-    place: toStr(params.place),
-    price: toStr(params.price),
-    date: toStr(params.date),
-    link: toStr(params.link),
-    id: toStr(params.id)
-  };
+          ...params,
+          photo: params.photo,
+           tags: Array.isArray(params.tags)
+            ? params.tags
+            : typeof params.tags === 'string'
+              ? params.tags.split(',')
+              : [],
+          memo: toStr(params.memo),
+          title: toStr(params.title),
+          place: toStr(params.place),
+          price: toStr(params.price),
+          date: toStr(params.date),
+          link: toStr(params.link),
+          id: toStr(params.id)
+        };
+
+  useFocusEffect(
+      React.useCallback(() => {
+        // 画面がフォーカスされたときに実行
+        // ここで最新データを取得してstateに反映
+        
+        let copyData = getCopySampleData();
+        for (let element of copyData) {
+          if (element.id === item.id) {
+            Object.assign(item, element)
+          }
+        }
+
+        // cleanupは画面がアンフォーカスされる時
+        return () => {
+          // ここに必要ならクリーンアップ処理
+        };
+      }, [])
+    );
+  
 
   const handleBack = () => {
     router.back();
