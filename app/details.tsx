@@ -83,6 +83,7 @@ const Details = () => {
 
           <TouchableOpacity onPress= {() => {
               deleteData(item.id ?? '');
+              console.log(item.id ?? 'idを読み取れてないかも');
               handleBack();
               alert('削除しました')
             }
