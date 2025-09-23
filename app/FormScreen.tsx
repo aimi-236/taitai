@@ -1,4 +1,4 @@
-import { addData } from '@/data/sampleData';
+import { addData, updateData } from '@/data/sampleData';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useState } from 'react';
 import { Dimensions, Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
@@ -16,6 +16,8 @@ const FormScreen = ({ route }: any) => {
   const [address, setAddress] = useState(params.place ?? '');
   const [price, setPrice] = useState(params.price ?? '');
   const [memo, setMemo] = useState(params.memo ?? '');
+  const [id, setId] = useState(params.id ?? '');
+  const from = params.memo ?? '';
 
   // string | string[] → string へ変換する関数
   const toStr = (v: string | string[] | undefined): string | undefined => {
@@ -39,12 +41,20 @@ const FormScreen = ({ route }: any) => {
       price: Array.isArray(price) 
         ? price.join(',') 
         : price ?? '',
+      id: Array.isArray(id)
+        ? id.join(',')
+        : id ?? '',
     };
 
   const handleSave = () => {
     
     console.log("保存データ:", data);
-    addData(data.title, data.tags, data.address, data.memo);
+    if (from === 'details') {
+      updateData(data.id, data.title, data.tags, data.address, data.memo);
+    } else {
+      addData(data.title, data.tags, data.address, data.memo);
+    }
+    
     alert(route?.params ? "更新しました！" : "新規作成しました！");
 
     // 保存後に戻る

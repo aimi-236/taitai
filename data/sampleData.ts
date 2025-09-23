@@ -86,6 +86,17 @@ export const addData = function(title: string, tags: Array<string>, place: strin
   )
 }
 
+export const updateData = function(id: string, title: string, tags: Array<string>, place: string, detail: string) {
+  for (let item of sampleData) {
+    if (item.id === id) {
+      item.title = title;
+      item.tags = tags;
+      item.place = place;
+      item.memo = detail;
+    }
+  }
+}
+
 const getMaxId = function() {
   let maxId = 0;
   for (let data of sampleData) {

@@ -40,6 +40,7 @@ const Details = () => {
     price: toStr(params.price),
     date: toStr(params.date),
     link: toStr(params.link),
+    id: toStr(params.id)
   };
 
   const handleBack = () => {
