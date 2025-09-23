@@ -19,6 +19,12 @@ export default function IndexScreen() {
       const newData = [...sampleData]; // 例: APIからfetchするならawait fetch()など
       setData(newData);
 
+      console.log('現在残っている要素のid')
+
+      for (let item of sampleData) {
+        console.log(item.id + ',')
+      }
+
       // cleanupは画面がアンフォーカスされる時
       return () => {
         // ここに必要ならクリーンアップ処理
