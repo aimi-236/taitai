@@ -10,7 +10,7 @@ const FormScreen = ({ route }: any) => {
   const params = useLocalSearchParams();
   
 
-  // 編集時は route.params に各値が直接入る
+  // 編集時は params に各値が直接入る
   const [title, setTitle] = useState(params.title ?? '');
   const [tags, setTags] = useState(params.tags ?? '');
   const [address, setAddress] = useState(params.place ?? '');
@@ -26,6 +26,7 @@ const FormScreen = ({ route }: any) => {
   };
 
   const data = {
+    //tagsは配列、他は文字列
       title: typeof title === 'string' ? title : '',
       tags: typeof tags === "string" 
         ? tags.split(',')

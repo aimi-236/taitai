@@ -56,6 +56,8 @@ const Details = () => {
         for (let element of copyData) {
           if (element.id === item.id) {
             Object.assign(item, element)
+            console.log('データの更新')
+            
           }
         }
 
