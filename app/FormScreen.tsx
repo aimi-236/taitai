@@ -51,11 +51,11 @@ const FormScreen = ({ route }: any) => {
     console.log("保存データ:", data);
     if (from === '/details') {
       updateData(data.id, data.title, data.tags, data.address, data.memo);
+      alert('更新しました！');
     } else {
       addData(data.title, data.tags, data.address, data.memo);
+      alert('新規作成しました！');
     }
-    
-    alert(route?.params ? "更新しました！" : "新規作成しました！");
 
     // 保存後に戻る
     router.back();

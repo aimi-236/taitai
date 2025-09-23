@@ -97,6 +97,12 @@ export const updateData = function(id: string, title: string, tags: Array<string
   }
 }
 
+export const deleteData = function(id: string) {
+  let newData = sampleData.filter(function(value) {
+    return value.id !== id;
+  })
+}
+
 const getMaxId = function() {
   let maxId = 0;
   for (let data of sampleData) {

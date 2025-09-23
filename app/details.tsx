@@ -1,3 +1,4 @@
+import { deleteData } from '@/data/sampleData';
 import { Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { Dimensions, Image, Linking, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
@@ -79,7 +80,14 @@ const Details = () => {
           >
             <Text style={styles.action}>編集</Text>
           </TouchableOpacity>
-          <Text style={styles.action}>削除</Text>
+
+          <TouchableOpacity onPress= {() => {
+              deleteData(item.id ?? '');
+            }
+          }>
+            <Text style={styles.action}>削除</Text>
+          </TouchableOpacity>
+            
         </View>
       </View>
 
