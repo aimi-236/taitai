@@ -17,7 +17,7 @@ const FormScreen = ({ route }: any) => {
   const [price, setPrice] = useState(params.price ?? '');
   const [memo, setMemo] = useState(params.memo ?? '');
   const [id, setId] = useState(params.id ?? '');
-  const from = params.memo ?? '';
+  const from = params.from ?? '';
 
   // string | string[] → string へ変換する関数
   const toStr = (v: string | string[] | undefined): string | undefined => {
