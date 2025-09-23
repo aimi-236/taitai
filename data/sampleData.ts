@@ -2,7 +2,7 @@
 
 
 // dateは作成日?
-export const sampleData = [
+export let sampleData = [
   {
     id: "1",
     title: "新江ノ島水族館",
@@ -101,6 +101,8 @@ export const deleteData = function(id: string) {
   let newData = sampleData.filter(function(value) {
     return value.id !== id;
   })
+  
+  sampleData = newData
 }
 
 const getMaxId = function() {
