@@ -1,4 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
+import { useFocusEffect } from '@react-navigation/native';
 import { useRouter } from "expo-router";
 import React, { useMemo, useState } from "react";
 import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
@@ -9,6 +10,21 @@ import SortButton from "./SortButton";
 export default function IndexScreen() {
   const router = useRouter(); // ← 追加
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+  const [data, setData] = useState(sampleData);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      // 画面がフォーカスされたときに実行
+      // ここで最新データを取得してstateに反映
+      const newData = [...sampleData]; // 例: APIからfetchするならawait fetch()など
+      setData(newData);
+
+      // cleanupは画面がアンフォーカスされる時
+      return () => {
+        // ここに必要ならクリーンアップ処理
+      };
+    }, [])
+  );
 
   const sortedData = useMemo(() => {
     return [...sampleData].sort((a, b) => {
