@@ -49,7 +49,7 @@ const FormScreen = ({ route }: any) => {
   const handleSave = () => {
     
     console.log("保存データ:", data);
-    if (from === 'details') {
+    if (from === '/details') {
       updateData(data.id, data.title, data.tags, data.address, data.memo);
     } else {
       addData(data.title, data.tags, data.address, data.memo);
