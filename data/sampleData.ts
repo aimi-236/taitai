@@ -1,6 +1,8 @@
 // sampleData.ts
+
+
 // dateは作成日?
-export const sampleData = [
+export let sampleData = [
   {
     id: "1",
     title: "新江ノ島水族館",
@@ -178,3 +180,53 @@ export const sampleData = [
     memo: "住所は千葉県観光物産協会のもの。周辺にある観光地を紹介してくれるらしい"
   }
 ];
+
+export const addData = function(title: string, tags: Array<string>, place: string, detail: string) {
+  sampleData.push({
+    id: String(getMaxId() + 1),
+    title: title,
+    photo: '',
+    place: place,
+    price: '',
+    link: '',
+    date: '',
+    tags: tags,
+    memo: detail
+    }
+  )
+}
+
+export const updateData = function(id: string, title: string, tags: Array<string>, place: string, detail: string) {
+  for (let item of sampleData) {
+    if (item.id === id) {
+      item.title = title;
+      item.tags = tags;
+      item.place = place;
+      item.memo = detail;
+    }
+  }
+}
+
+export const deleteData = function(id: string) {
+  let newData = sampleData.filter(function(value) {
+    return value.id !== id;
+  })
+  
+  sampleData = newData
+}
+
+const getMaxId = function() {
+  let maxId = 0;
+  for (let data of sampleData) {
+    if (maxId < parseInt(data["id"])) {
+      maxId = parseInt(data["id"]);
+    }
+  }
+
+  return maxId
+}
+
+export const getCopySampleData = function() {
+  //配列がたくさん生成されるけどガベージコレクションを信頼することにする
+  return structuredClone(sampleData);
+}
