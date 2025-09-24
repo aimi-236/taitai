@@ -8,35 +8,36 @@ import { sampleData } from "../data/sampleData"; //既存タグ取得用
 
 const screenWidth = Dimensions.get('window').width;
 
-const FormScreen = ({ route }: any) => {
+const FormScreen = () => {
   const router = useRouter();
-  const params = useLocalSearchParams();
-  
-  // 編集時は params に各値が直接入る
-  const rawTags = route?.params?.tags;
+  const params = useLocalSearchParams();   // ← これに統一
+
+  // --- 初期値セット ---
+  const rawTags = params.tags;
   const initialTags: string[] = Array.isArray(rawTags)
     ? rawTags
     : typeof rawTags === 'string' && rawTags.length > 0
-    ? rawTags.split(',').map(t => t.trim()).filter(Boolean)
-    : [];
-  
-  const [title, setTitle] = useState(route?.params?.title ?? '');
+      ? rawTags.split(',').map(t => t.trim()).filter(Boolean)
+      : [];
+
+  const getString = (v: unknown): string => Array.isArray(v) ? (v[0] ?? '') : (typeof v === 'string' ? v : '');
+  const [title, setTitle] = useState(getString(params.title));
   const [tags, setTags] = useState<string[]>(initialTags);
   const [tagInput, setTagInput] = useState('');
-  const [place, setAddress] = useState(route?.params?.place ?? '');
-  const [price, setPrice] = useState(route?.params?.price ?? '');
-  const [memo, setMemo] = useState(route?.params?.memo ?? '');
-  const [link, setLink] = useState(route?.params?.link ?? '');
-  const [photo, setPhoto] = useState(route?.params?.photo ?? null);
-  const [id, setId] = useState(params.id ?? '');
+  const [place, setAddress] = useState(getString(params.place));
+  const [price, setPrice] = useState(getString(params.price));
+  const [memo, setMemo] = useState(getString(params.memo));
+  const [link, setLink] = useState(getString(params.link));
+  const [photo, setPhoto] = useState(getString(params.photo) || null);
+  const [id, setId] = useState(getString(params.id));
   const from = params.from ?? '';
 
-  //既存タグ一覧をユニーク化
+  // --- タグ候補 ---
   const existingTags = useMemo(() => {
     const allTags = sampleData.flatMap(item => item.tags || []);
     return Array.from(new Set(allTags));
   }, []);
-  
+
   const hiraToKana = (str: string) =>
     str.replace(/[\u3041-\u3096]/g, ch =>
       String.fromCharCode(ch.charCodeAt(0) + 0x60)
@@ -45,7 +46,7 @@ const FormScreen = ({ route }: any) => {
     str.replace(/[\u30A1-\u30F6]/g, ch =>
       String.fromCharCode(ch.charCodeAt(0) - 0x60)
     );
-  
+
   const suggestions = useMemo(() => {
     if (tagInput.trim() === '') return [];
     const inputHira = kanaToHira(tagInput);
@@ -59,7 +60,8 @@ const FormScreen = ({ route }: any) => {
       );
     });
   }, [tagInput, existingTags, tags]);
-  
+
+  // --- 画像選択 ---
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -67,24 +69,25 @@ const FormScreen = ({ route }: any) => {
       aspect: [4, 3],
       quality: 1,
     });
-
     if (!result.canceled) {
       setPhoto(result.assets[0].uri);
     }
   };
 
+  // --- 保存 ---
   const handleSave = () => {
-    const data = { title, tags, place, price, memo, link, photo, id };
+    const data = { title, tags, place, memo, price, link, photo, id };
     console.log('保存データ:', data);
 
     if (from === '/details') {
-      updateData(id, title, tags, place, memo);
+      // updateDataの引数順に合わせる
+      updateData(id, title, tags, place, memo, price, link, photo);
       alert('更新しました！');
     } else {
-      addData(title, tags, place, memo);
+      // addDataの引数順に合わせる
+      addData(title, tags, place, memo, price, link, photo);
       alert('新規作成しました！');
     }
-
     router.back();
   };
 
@@ -100,6 +103,7 @@ const FormScreen = ({ route }: any) => {
     tagInputRef.current?.focus();
   };
 
+  // --- UI ---
   return (
     <SafeAreaView style={styles.container}>
       {/* ヘッダー */}
@@ -109,7 +113,7 @@ const FormScreen = ({ route }: any) => {
         </TouchableOpacity>
         <View style={styles.headerActions}>
           <TouchableOpacity onPress={handleSave}>
-            <Text style={styles.action}>{route?.params ? '更新' : '保存'}</Text>
+            <Text style={styles.action}>{from === '/details' ? '更新' : '保存'}</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -124,7 +128,7 @@ const FormScreen = ({ route }: any) => {
         {/* 写真 */}
         <TouchableOpacity onPress={pickImage} style={{ marginHorizontal: -16 }}>
           {photo ? (
-            <Image source={{ uri: photo }} style={styles.image} resizeMode="cover" />
+            <Image source={{ uri: typeof photo === 'string' ? photo : '' }} style={styles.image} resizeMode="cover" />
           ) : (
             <View style={[styles.image, { justifyContent: 'center', backgroundColor: '#c0c0c0' }]}>
               <Text style={{ color: '#fff', fontSize: 18, textAlign: 'center', width: '100%' }}>
@@ -134,11 +138,11 @@ const FormScreen = ({ route }: any) => {
           )}
         </TouchableOpacity>
 
-        {/* 入力 */}
+        {/* タイトル */}
         <TextInput
           style={styles.inputTitle}
           placeholder="タイトルを入力"
-          value={title}
+          value={typeof title === 'string' ? title : ''}
           onChangeText={setTitle}
         />
 
@@ -179,36 +183,39 @@ const FormScreen = ({ route }: any) => {
           </View>
         )}
 
+        {/* 住所 */}
         <TextInput
           style={styles.input}
           placeholder="住所を入力"
-          value={place}
+          value={typeof place === 'string' ? place : ''}
           onChangeText={setAddress}
         />
 
+        {/* 価格 */}
         <TextInput
           style={styles.input}
           placeholder="価格を入力"
-          value={price}
+          value={typeof price === 'string' ? price : ''}
           onChangeText={setPrice}
         />
 
+        {/* URL */}
         <TextInput
           style={styles.input}
           placeholder="URLを入力"
-          value={link}
+          value={typeof link === 'string' ? link : ''}
           onChangeText={setLink}
         />
 
+        {/* 詳細 */}
         <View style={styles.detailHeader}>
           <Text style={styles.detailTitle}>詳細</Text>
           <View style={styles.detailLine} />
         </View>
-
         <TextInput
           style={[styles.input, styles.memo]}
           placeholder="説明文を入力"
-          value={memo}
+          value={typeof memo === 'string' ? memo : ''}
           onChangeText={setMemo}
           multiline
         />
@@ -217,6 +224,7 @@ const FormScreen = ({ route }: any) => {
   );
 };
 
+// --- スタイル ---
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#fff' },
   header: {

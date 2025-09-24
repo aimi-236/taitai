@@ -1,7 +1,18 @@
-// sampleData.ts
+// データの型定義
+export type ItemType = {
+  id: string;
+  title: string;
+  tags: string[];
+  place: string;
+  memo: string;
+  price: string;
+  link: string;
+  photo: string;
+  date: string;
+};
 
 
-// dateは作成日?
+// 初期データ
 export let sampleData = [
   {
     id: "1",
@@ -181,52 +192,71 @@ export let sampleData = [
   }
 ];
 
-export const addData = function(title: string, tags: Array<string>, place: string, detail: string) {
-  sampleData.push({
+export const addData = (
+  title: string,
+  tags: string[],
+  place: string,
+  memo: string,
+  price?: string,
+  link?: string,
+  photo?: string | null
+) => {
+  const newItem: ItemType = {
     id: String(getMaxId() + 1),
-    title: title,
-    photo: '',
-    place: place,
-    price: '',
-    link: '',
-    date: '',
-    tags: tags,
-    memo: detail
-    }
-  )
-}
+    title,
+    tags,
+    place,
+    memo,
+    price: price ?? '',
+    link: link ?? '',
+    photo: typeof photo === 'string' ? photo : '',
+    date: new Date().toISOString().split("T")[0], // 保存時の日付を入れる
+  };
+  sampleData.push(newItem);
+};
 
-export const updateData = function(id: string, title: string, tags: Array<string>, place: string, detail: string) {
+// 更新
+export const updateData = (
+  id: string,
+  title: string,
+  tags: string[],
+  place: string,
+  memo: string,
+  price?: string,
+  link?: string,
+  photo?: string | null
+) => {
   for (let item of sampleData) {
     if (item.id === id) {
       item.title = title;
       item.tags = tags;
       item.place = place;
-      item.memo = detail;
+      item.memo = memo;
+      item.price = typeof price === 'string' ? price : '';
+      item.link = typeof link === 'string' ? link : '';
+      item.photo = typeof photo === 'string' ? photo : '';
+      item.date = typeof item.date === 'string' ? item.date : new Date().toISOString().split("T")[0];
     }
   }
-}
+};
 
-export const deleteData = function(id: string) {
-  let newData = sampleData.filter(function(value) {
-    return value.id !== id;
-  })
-  
-  sampleData = newData
-}
+// 削除
+export const deleteData = (id: string) => {
+  sampleData = sampleData.filter((value) => value.id !== id);
+};
 
-const getMaxId = function() {
+// 最大IDを取得
+const getMaxId = () => {
   let maxId = 0;
   for (let data of sampleData) {
     if (maxId < parseInt(data["id"])) {
       maxId = parseInt(data["id"]);
     }
   }
+  return maxId;
+};
 
-  return maxId
-}
-
-export const getCopySampleData = function() {
-  //配列がたくさん生成されるけどガベージコレクションを信頼することにする
+// コピー
+export const getCopySampleData = () => {
   return structuredClone(sampleData);
-}
+};
