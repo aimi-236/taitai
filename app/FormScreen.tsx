@@ -108,7 +108,7 @@ const FormScreen = () => {
 
   // --- UI ---
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: theme.palette.background }}>
+    <SafeAreaView style={[styles.container, { backgroundColor: theme.palette.background }]} edges={['top']}>
       {/* ヘッダー */}
       <View style={[styles.header, { backgroundColor: theme.palette.background }]}>
         <TouchableOpacity onPress={handleBack}>
@@ -236,7 +236,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingTop: 40,
+    paddingTop: 10,
     paddingHorizontal: 8,
     paddingBottom: 12,
     borderBottomWidth: 1,
@@ -245,7 +245,7 @@ const styles = StyleSheet.create({
   backArrow: { fontSize: 20, fontWeight: 'bold', marginRight: 8 },
   headerActions: { flexDirection: 'row' },
   action: { fontSize: 16, marginLeft: 12 },
-  scrollContent: { padding: 16 },
+  scrollContent: { paddingHorizontal: 16, paddingTop: 0, paddingBottom: 16 },
   image: { width: screenWidth, height: 200, marginBottom: 16 },
   inputTitle: { fontSize: 24, fontWeight: 'bold', borderBottomWidth: 1, marginBottom: 12, padding: 4 },
   input: { fontSize: 16, borderBottomWidth: 1, marginBottom: 12, padding: 4 },

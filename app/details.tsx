@@ -181,7 +181,15 @@ export default function Details() {
 
           {/* 詳細 */}
           <View style={styles.detailHeader}>
-            <Text style={[styles.detailTitle, { color: theme.palette.text, fontFamily: theme.font }]}>詳細</Text>
+            <Text
+              style={[
+                styles.detailTitle,
+                { color: theme.palette.text, fontFamily: theme.font },
+                theme.font === 'System' ? { fontWeight: 'bold' } : { fontWeight: 'normal' }
+              ]}
+            >
+              詳細
+            </Text>
             <View style={styles.detailLine} />
           </View>
           <Text style={[styles.text, { color: theme.palette.text, fontFamily: theme.font }]}>
