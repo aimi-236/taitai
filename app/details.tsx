@@ -127,8 +127,10 @@ export default function Details() {
                 key={i}
                 style={[
                   styles.tag,
-                  { backgroundColor: theme.palette.tagBg, color: theme.palette.tagText, fontFamily: theme.font }
+                  { backgroundColor: theme.palette.tagBg, color: theme.palette.tagText, fontFamily: theme.font, lineHeight: 18, minHeight: 26, overflow: 'hidden' }
                 ]}
+                numberOfLines={1}
+                ellipsizeMode="tail"
               >
                 #{tag}
               </Text>
@@ -210,6 +212,9 @@ const styles = StyleSheet.create({
     marginRight: 8,
     borderRadius: 6,
     fontSize: 14,
+    lineHeight: 18,
+    minHeight: 26,
+    overflow: 'hidden',
     shadowColor: '#000',
     shadowOpacity: 0.1,
     shadowOffset: { width: 1, height: 1 },
