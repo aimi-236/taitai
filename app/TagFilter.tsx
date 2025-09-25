@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from "react";
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { useTheme } from "./_layout";
 
 type Props = {
   allItems: { tags?: string[] }[];
@@ -8,6 +9,7 @@ type Props = {
 
 const TagFilter: React.FC<Props> = ({ allItems, onChangeSelected }) => {
   const [selected, setSelected] = useState<string[]>([]);
+  const { theme } = useTheme();
 
   //タグごとの出現回数を計算
   const tagCounts = useMemo(() => {
@@ -38,16 +40,20 @@ const TagFilter: React.FC<Props> = ({ allItems, onChangeSelected }) => {
   return (
     <View style={styles.container}>
       <ScrollView
-        style={{ maxHeight: 100 }} // タグ3段くらいまで表示
+        style={{ maxHeight: 100 }}
         contentContainerStyle={styles.tagList}
       >
         {tagCounts.map(({ tag, count }) => (
           <TouchableOpacity
             key={tag}
-            style={[styles.tag, selected.includes(tag) && styles.tagSelected]}
+            style={[
+              styles.tag,
+              { backgroundColor: selected.includes(tag) ? theme.palette.tagBg : theme.palette.tagBg },
+              selected.includes(tag) && { borderWidth: 2, borderColor: theme.palette.tagText }
+            ]}
             onPress={() => toggleTag(tag)}
           >
-            <Text style={selected.includes(tag) ? styles.textSelected : styles.text}>
+            <Text style={{ color: theme.palette.tagText, fontSize: 14, fontFamily: theme.font }}>
               #{tag} ({count})
             </Text>
           </TouchableOpacity>

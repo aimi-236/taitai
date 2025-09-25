@@ -5,12 +5,14 @@ import React, { useMemo, useRef, useState } from 'react';
 import { Dimensions, Image, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { sampleData } from "../data/sampleData"; //既存タグ取得用
+import { useTheme } from "./_layout";
 
 const screenWidth = Dimensions.get('window').width;
 
 const FormScreen = () => {
   const router = useRouter();
   const params = useLocalSearchParams();   // ← これに統一
+  const { theme } = useTheme();
 
   // --- 初期値セット ---
   const rawTags = params.tags;
@@ -105,33 +107,29 @@ const FormScreen = () => {
 
   // --- UI ---
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, { backgroundColor: theme.palette.background }]}>
       {/* ヘッダー */}
-      <View style={styles.header}>
+      <View style={[styles.header, { backgroundColor: theme.palette.background }]}>
         <TouchableOpacity onPress={handleBack}>
-          <Text style={styles.backArrow}>←</Text>
+          <Text style={[styles.backArrow, { color: theme.palette.text, fontFamily: theme.font }]}>←</Text>
         </TouchableOpacity>
         <View style={styles.headerActions}>
           <TouchableOpacity onPress={handleSave}>
-            <Text style={styles.action}>{from === '/details' ? '更新' : '保存'}</Text>
+            <Text style={[styles.action, { color: theme.palette.text, fontFamily: theme.font }]}>
+              {from === '/details' ? '更新' : '保存'}
+            </Text>
           </TouchableOpacity>
         </View>
       </View>
 
-      <KeyboardAwareScrollView
-        contentContainerStyle={styles.scrollContent}
-        enableOnAndroid={true}
-        extraScrollHeight={60}
-        keyboardShouldPersistTaps="handled"
-        keyboardOpeningTime={0}
-      >
+      <KeyboardAwareScrollView contentContainerStyle={styles.scrollContent} keyboardShouldPersistTaps="handled">
         {/* 写真 */}
         <TouchableOpacity onPress={pickImage} style={{ marginHorizontal: -16 }}>
           {photo ? (
             <Image source={{ uri: typeof photo === 'string' ? photo : '' }} style={styles.image} resizeMode="cover" />
           ) : (
-            <View style={[styles.image, { justifyContent: 'center', backgroundColor: '#c0c0c0' }]}>
-              <Text style={{ color: '#fff', fontSize: 18, textAlign: 'center', width: '100%' }}>
+            <View style={[styles.image, { justifyContent: 'center', backgroundColor: theme.palette.tagBg }]}>
+              <Text style={{ color: theme.palette.text, fontSize: 18, textAlign: 'center', width: '100%', fontFamily: theme.font }}>
                 Upload image
               </Text>
             </View>
@@ -140,31 +138,31 @@ const FormScreen = () => {
 
         {/* タイトル */}
         <TextInput
-          style={styles.inputTitle}
+          style={[
+            styles.inputTitle,
+            { color: theme.palette.text, fontFamily: theme.font, borderBottomColor: theme.palette.tagBg }
+          ]}
           placeholder="タイトルを入力"
-          value={typeof title === 'string' ? title : ''}
+          placeholderTextColor="#888"
+          value={title}
           onChangeText={setTitle}
         />
 
         {/* タグ入力 */}
-        <View style={styles.tagInputRow}>
+        <View style={[styles.tagInputRow, { borderColor: theme.palette.tagBg }]}>
           {tags.map(tag => (
-            <View key={tag} style={styles.tag}>
-              <Text>#{tag}</Text>
+            <View key={tag} style={[styles.tag, { backgroundColor: theme.palette.tagBg }]}>
+              <Text style={{ color: theme.palette.tagText, fontFamily: theme.font }}>#{tag}</Text>
             </View>
           ))}
           <TextInput
             ref={tagInputRef}
-            style={styles.tagTextInput}
+            style={[styles.tagTextInput, { color: theme.palette.text, fontFamily: theme.font }]}
             placeholder="タグを入力"
+            placeholderTextColor="#888"
             value={tagInput}
             onChangeText={setTagInput}
-            onSubmitEditing={() => {
-              addTag(tagInput);
-              requestAnimationFrame(() => {
-                tagInputRef.current?.focus();
-              });
-            }}
+            onSubmitEditing={() => addTag(tagInput)}
             onKeyPress={({ nativeEvent }) => {
               if (nativeEvent.key === 'Backspace' && tagInput === '') {
                 setTags(tags.slice(0, -1));
@@ -173,49 +171,56 @@ const FormScreen = () => {
           />
         </View>
 
-        {suggestions.length > 0 && (
-          <View style={styles.suggestionBox}>
-            {suggestions.map(item => (
-              <TouchableOpacity key={item} style={styles.suggestion} onPress={() => addTag(item)}>
-                <Text>{item}</Text>
-              </TouchableOpacity>
-            ))}
-          </View>
-        )}
-
         {/* 住所 */}
         <TextInput
-          style={styles.input}
+          style={[
+            styles.input,
+            { color: theme.palette.text, fontFamily: theme.font, borderBottomColor: theme.palette.tagBg }
+          ]}
           placeholder="住所を入力"
-          value={typeof place === 'string' ? place : ''}
+          placeholderTextColor="#888"
+          value={place}
           onChangeText={setAddress}
         />
 
         {/* 価格 */}
         <TextInput
-          style={styles.input}
+          style={[
+            styles.input,
+            { color: theme.palette.text, fontFamily: theme.font, borderBottomColor: theme.palette.tagBg }
+          ]}
           placeholder="価格を入力"
-          value={typeof price === 'string' ? price : ''}
+          placeholderTextColor="#888"
+          value={price}
           onChangeText={setPrice}
         />
 
         {/* URL */}
         <TextInput
-          style={styles.input}
+          style={[
+            styles.input,
+            { color: theme.palette.text, fontFamily: theme.font, borderBottomColor: theme.palette.tagBg }
+          ]}
           placeholder="URLを入力"
-          value={typeof link === 'string' ? link : ''}
+          placeholderTextColor="#888"
+          value={link}
           onChangeText={setLink}
         />
 
         {/* 詳細 */}
         <View style={styles.detailHeader}>
-          <Text style={styles.detailTitle}>詳細</Text>
-          <View style={styles.detailLine} />
+          <Text style={[styles.detailTitle, { color: theme.palette.text, fontFamily: theme.font }]}>詳細</Text>
+          <View style={[styles.detailLine, { backgroundColor: theme.palette.tagBg }]} />
         </View>
         <TextInput
-          style={[styles.input, styles.memo]}
+          style={[
+            styles.input,
+            styles.memo,
+            { color: theme.palette.text, fontFamily: theme.font, borderBottomColor: theme.palette.tagBg }
+          ]}
           placeholder="説明文を入力"
-          value={typeof memo === 'string' ? memo : ''}
+          placeholderTextColor="#888"
+          value={memo}
           onChangeText={setMemo}
           multiline
         />
@@ -224,14 +229,12 @@ const FormScreen = () => {
   );
 };
 
-// --- スタイル ---
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#fff' },
+  container: { flex: 1 },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: '#fff',
     paddingTop: 40,
     paddingHorizontal: 8,
     paddingBottom: 12,
@@ -240,59 +243,18 @@ const styles = StyleSheet.create({
   },
   backArrow: { fontSize: 20, fontWeight: 'bold', marginRight: 8 },
   headerActions: { flexDirection: 'row' },
-  action: { fontSize: 16, color: 'black', marginLeft: 12 },
+  action: { fontSize: 16, marginLeft: 12 },
   scrollContent: { padding: 16 },
   image: { width: screenWidth, height: 200, marginBottom: 16 },
-  inputTitle: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
-    marginBottom: 12,
-    padding: 4,
-  },
-  input: {
-    fontSize: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
-    marginBottom: 12,
-    padding: 4,
-  },
-  suggestionBox: {
-    backgroundColor: '#fff',
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 4,
-    marginBottom: 8,
-  },
-  suggestion: {
-    padding: 8,
-    backgroundColor: '#f0f0f0',
-    borderBottomWidth: 1,
-    borderColor: '#ddd',
-  },
-  tag: {
-    backgroundColor: '#eee',
-    paddingVertical: 4,
-    paddingHorizontal: 8,
-    margin: 4,
-    borderRadius: 6,
-  },
-  tagInputRow: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: '#ccc',
-    padding: 4,
-    borderRadius: 6,
-    marginBottom: 12,
-  },
+  inputTitle: { fontSize: 24, fontWeight: 'bold', borderBottomWidth: 1, marginBottom: 12, padding: 4 },
+  input: { fontSize: 16, borderBottomWidth: 1, marginBottom: 12, padding: 4 },
+  tag: { paddingVertical: 4, paddingHorizontal: 8, margin: 4, borderRadius: 6 },
+  tagInputRow: { flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', borderWidth: 1, padding: 4, borderRadius: 6, marginBottom: 12 },
   tagTextInput: { minWidth: 60, flex: 1, padding: 4, fontSize: 16 },
   memo: { height: 100, textAlignVertical: 'top' },
   detailHeader: { marginTop: 16, marginBottom: 8 },
   detailTitle: { fontSize: 18, fontWeight: 'bold', marginBottom: 4 },
-  detailLine: { height: 2, backgroundColor: '#ddd', width: '100%' },
+  detailLine: { height: 2, width: '100%' },
 });
 
 export default FormScreen;
