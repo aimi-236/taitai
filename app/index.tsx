@@ -76,7 +76,13 @@ export default function IndexScreen() {
               placeholderTextColor="#888"
               value={query}
               onChangeText={setQuery}
-              style={{ paddingVertical: 2, fontSize: 16, color: theme.palette.text, fontFamily: theme.font }}
+              style={{
+                paddingVertical: 0,
+                fontSize: 14,
+                color: theme.palette.text,
+                fontFamily: theme.font,
+                height: 20,
+              }}
             />
           </View>
 
@@ -106,7 +112,15 @@ export default function IndexScreen() {
               <Image source={typeof item.photo === "number" ? item.photo : { uri: item.photo }} style={styles.photo} />
               <View style={styles.info}>
                 {/* タイトル */}
-                <Text style={[styles.title, { color: theme.palette.text, fontFamily: theme.font }]}>{item.title}</Text>
+                <Text
+                  style={[
+                    styles.title,
+                    { color: theme.palette.text, fontFamily: theme.font },
+                    theme.font === 'System' ? { fontWeight: 'bold' } : { fontWeight: 'normal' }
+                  ]}
+                >
+                  {item.title}
+                </Text>
 
                 {/* 住所 */}
                 <View style={{ flexDirection: 'row', alignItems: 'flex-start', marginBottom: 2 }}>
@@ -151,7 +165,7 @@ const styles = StyleSheet.create({
   container: { flex: 1 },
   header: { flexDirection: "row", padding: 10, alignItems: "center" },
   button: { marginHorizontal: 5, padding: 5, backgroundColor: "#eee", borderRadius: 5 },
-  searchBox: { flex: 1, backgroundColor: "#f0f0f0", padding: 5, marginHorizontal: 5, borderRadius: 6 },
+  searchBox: { flex: 1, backgroundColor: "#f0f0f0", padding: 5, marginHorizontal: 5, borderRadius: 6, height: 30, justifyContent: 'center' },
   card: { flexDirection: "row", padding: 10, borderBottomWidth: 1, borderColor: "#ddd", alignItems: "center" },
   photo: { width: 85, height: 85, marginRight: 12, borderRadius: 8, resizeMode: "cover" },
   info: { flex: 1 },

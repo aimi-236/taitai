@@ -2,8 +2,9 @@ import { addData, updateData } from '@/data/sampleData';
 import * as ImagePicker from 'expo-image-picker';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useMemo, useRef, useState } from 'react';
-import { Dimensions, Image, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Dimensions, Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { sampleData } from "../data/sampleData"; //既存タグ取得用
 import { useTheme } from "./_layout";
 
@@ -107,7 +108,7 @@ const FormScreen = () => {
 
   // --- UI ---
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: theme.palette.background }]}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: theme.palette.background }}>
       {/* ヘッダー */}
       <View style={[styles.header, { backgroundColor: theme.palette.background }]}>
         <TouchableOpacity onPress={handleBack}>

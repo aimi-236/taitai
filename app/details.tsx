@@ -116,7 +116,13 @@ export default function Details() {
 
         {/* 詳細スクロール部分 */}
         <ScrollView contentContainerStyle={styles.scrollContent}>
-          <Text style={[styles.title, { color: theme.palette.text, fontFamily: theme.font }]}>
+          <Text
+            style={[
+              styles.title,
+              { color: theme.palette.text, fontFamily: theme.font },
+              theme.font === 'System' ? { fontWeight: 'bold' } : { fontWeight: 'normal' }
+            ]}
+          >
             {item.title ?? ''}
           </Text>
 
