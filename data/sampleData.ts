@@ -1,6 +1,19 @@
-// sampleData.ts
-// dateは作成日?
-export const sampleData = [
+// データの型定義
+export type ItemType = {
+  id: string;
+  title: string;
+  tags: string[];
+  place: string;
+  memo: string;
+  price: string;
+  link: string;
+  photo: string;
+  date: string;
+};
+
+
+// 初期データ
+export let sampleData = [
   {
     id: "1",
     title: "新江ノ島水族館",
@@ -178,3 +191,72 @@ export const sampleData = [
     memo: "住所は千葉県観光物産協会のもの。周辺にある観光地を紹介してくれるらしい"
   }
 ];
+
+export const addData = (
+  title: string,
+  tags: string[],
+  place: string,
+  memo: string,
+  price?: string,
+  link?: string,
+  photo?: string | null
+) => {
+  const newItem: ItemType = {
+    id: String(getMaxId() + 1),
+    title,
+    tags,
+    place,
+    memo,
+    price: price ?? '',
+    link: link ?? '',
+    photo: typeof photo === 'string' ? photo : '',
+    date: new Date().toISOString().split("T")[0], // 保存時の日付を入れる
+  };
+  sampleData.push(newItem);
+};
+
+// 更新
+export const updateData = (
+  id: string,
+  title: string,
+  tags: string[],
+  place: string,
+  memo: string,
+  price?: string,
+  link?: string,
+  photo?: string | null
+) => {
+  for (let item of sampleData) {
+    if (item.id === id) {
+      item.title = title;
+      item.tags = tags;
+      item.place = place;
+      item.memo = memo;
+      item.price = typeof price === 'string' ? price : '';
+      item.link = typeof link === 'string' ? link : '';
+      item.photo = typeof photo === 'string' ? photo : '';
+      item.date = typeof item.date === 'string' ? item.date : new Date().toISOString().split("T")[0];
+    }
+  }
+};
+
+// 削除
+export const deleteData = (id: string) => {
+  sampleData = sampleData.filter((value) => value.id !== id);
+};
+
+// 最大IDを取得
+const getMaxId = () => {
+  let maxId = 0;
+  for (let data of sampleData) {
+    if (maxId < parseInt(data["id"])) {
+      maxId = parseInt(data["id"]);
+    }
+  }
+  return maxId;
+};
+
+// コピー
+export const getCopySampleData = () => {
+  return structuredClone(sampleData);
+};
