@@ -127,8 +127,10 @@ export default function IndexScreen() {
                       key={i}
                       style={[
                         styles.tag,
-                        { backgroundColor: theme.palette.tagBg, color: theme.palette.tagText, fontFamily: theme.font }
+                        { backgroundColor: theme.palette.tagBg, color: theme.palette.tagText, fontFamily: theme.font, lineHeight: 18, minHeight: 26, overflow: 'hidden' }
                       ]}
+                      numberOfLines={1}
+                      ellipsizeMode="tail"
                     >
                       #{tag}
                     </Text>
@@ -160,6 +162,9 @@ const styles = StyleSheet.create({
     marginRight: 8,
     borderRadius: 6,
     fontSize: 12,
+    lineHeight: 18,
+    minHeight: 26,
+    overflow: 'hidden',
   },
   tagsContainer: { flexDirection: 'row', flexWrap: 'wrap', marginTop: 4, rowGap: 8 },
 });
