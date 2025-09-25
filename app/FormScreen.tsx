@@ -141,7 +141,8 @@ const FormScreen = () => {
         <TextInput
           style={[
             styles.inputTitle,
-            { color: theme.palette.text, fontFamily: theme.font, borderBottomColor: theme.palette.tagBg }
+            { color: theme.palette.text, fontFamily: theme.font, borderBottomColor: theme.palette.tagBg },
+            theme.font === 'System' ? { fontWeight: 'bold' } : { fontWeight: 'normal' }
           ]}
           placeholder="タイトルを入力"
           placeholderTextColor="#888"
