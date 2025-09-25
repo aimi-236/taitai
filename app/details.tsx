@@ -5,6 +5,7 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useState } from 'react';
 import { Dimensions, Image, Linking, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useTheme } from './_layout';
 
 const screenWidth = Dimensions.get('window').width;
 
@@ -28,6 +29,7 @@ const toStr = (v: string | string[] | undefined): string | undefined => {
 export default function Details() {
   const params = useLocalSearchParams();
   const router = useRouter();
+  const { theme } = useTheme();  //テーマカラーを取得
 
   // 初期化（paramsからItemTypeに変換）
   const initItem: ItemType = {
@@ -75,12 +77,12 @@ export default function Details() {
   };
 
   return (
-    <SafeAreaView style={styles.safeArea}>
-      <View style={styles.container}>
+    <SafeAreaView style={[styles.safeArea, { backgroundColor: theme.palette.background }]}>
+      <View style={[styles.container, { backgroundColor: theme.palette.background }]}>
         {/* ヘッダー */}
-        <View style={styles.header}>
+        <View style={[styles.header, { backgroundColor: theme.palette.background, borderBottomColor: "#ddd" }]}>
           <TouchableOpacity onPress={handleBack}>
-            <Text style={styles.backArrow}>←</Text>
+            <Text style={[styles.backArrow, { color: theme.palette.text, fontFamily: theme.font }]}>←</Text>
           </TouchableOpacity>
 
           <View style={styles.headerActions}>
@@ -95,11 +97,11 @@ export default function Details() {
                 router.push({ pathname: '/FormScreen', params });
               }}
             >
-              <Text style={styles.action}>編集</Text>
+              <Text style={[styles.action, { color: theme.palette.text, fontFamily: theme.font }]}>編集</Text>
             </TouchableOpacity>
 
             <TouchableOpacity onPress={handleDelete}>
-              <Text style={styles.action}>削除</Text>
+              <Text style={[styles.action, { color: theme.palette.text, fontFamily: theme.font }]}>削除</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -114,31 +116,41 @@ export default function Details() {
 
         {/* 詳細スクロール部分 */}
         <ScrollView contentContainerStyle={styles.scrollContent}>
-          <Text style={styles.title}>{item.title ?? ''}</Text>
+          <Text style={[styles.title, { color: theme.palette.text, fontFamily: theme.font }]}>
+            {item.title ?? ''}
+          </Text>
 
           {/* タグ */}
           <View style={styles.tagsContainer}>
             {item.tags?.map((tag, i) => (
-              <Text key={i} style={styles.tag}>#{tag}</Text>
+              <Text
+                key={i}
+                style={[
+                  styles.tag,
+                  { backgroundColor: theme.palette.tagBg, color: theme.palette.tagText, fontFamily: theme.font }
+                ]}
+              >
+                #{tag}
+              </Text>
             ))}
           </View>
 
           {/* 住所 */}
           <View style={{ flexDirection: 'row', alignItems: 'flex-start', marginBottom: 2, paddingHorizontal: 5 }}>
-            <Ionicons name="location" size={16} color="#555" style={{ marginRight: 4 }} />
-            <Text style={{ fontSize: 14 }}>{item.place ?? ''}</Text>
+            <Ionicons name="location" size={16} color={theme.palette.text} style={{ marginRight: 4 }} />
+            <Text style={{ fontSize: 14, color: theme.palette.text, fontFamily: theme.font }}>{item.place ?? ''}</Text>
           </View>
 
           {/* 価格 */}
           <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 2, paddingHorizontal: 5 }}>
-            <Ionicons name="cash-outline" size={16} color="#555" style={{ marginRight: 4 }} />
-            <Text style={{ fontSize: 14 }}>{item.price ?? ''}</Text>
+            <Ionicons name="cash-outline" size={16} color={theme.palette.text} style={{ marginRight: 4 }} />
+            <Text style={{ fontSize: 14, color: theme.palette.text, fontFamily: theme.font }}>{item.price ?? ''}</Text>
           </View>
 
           {/* 日付 */}
           <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 8, paddingHorizontal: 5 }}>
-            <Ionicons name="calendar" size={16} color="#555" style={{ marginRight: 4 }} />
-            <Text style={{ fontSize: 14 }}>{item.date ?? ''}</Text>
+            <Ionicons name="calendar" size={16} color={theme.palette.text} style={{ marginRight: 4 }} />
+            <Text style={{ fontSize: 14, color: theme.palette.text, fontFamily: theme.font }}>{item.date ?? ''}</Text>
           </View>
 
           {/* リンク */}
@@ -153,16 +165,20 @@ export default function Details() {
                 }
               }}
             >
-              <Text style={styles.link}>{item.link}</Text>
+              <Text style={[styles.link, { color: theme.palette.text, fontFamily: theme.font }]}>
+                {item.link}
+              </Text>
             </TouchableOpacity>
           )}
 
           {/* 詳細 */}
           <View style={styles.detailHeader}>
-            <Text style={styles.detailTitle}>詳細</Text>
+            <Text style={[styles.detailTitle, { color: theme.palette.text, fontFamily: theme.font }]}>詳細</Text>
             <View style={styles.detailLine} />
           </View>
-          <Text style={styles.text}>{item.memo}</Text>
+          <Text style={[styles.text, { color: theme.palette.text, fontFamily: theme.font }]}>
+            {item.memo}
+          </Text>
         </ScrollView>
       </View>
     </SafeAreaView>
@@ -170,13 +186,12 @@ export default function Details() {
 }
 
 const styles = StyleSheet.create({
-  safeArea: { flex: 1, backgroundColor: '#fff' },
-  container: { flex: 1, backgroundColor: '#fff' },
+  safeArea: { flex: 1 },
+  container: { flex: 1 },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: '#fff',
     padding: 10,
     borderBottomWidth: 1,
     borderBottomColor: '#ddd',
