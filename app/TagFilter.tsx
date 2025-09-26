@@ -74,7 +74,7 @@ const styles = StyleSheet.create({
   tag: {
     backgroundColor: "#eee",
     paddingVertical: 4,
-    paddingHorizontal: 8,
+    paddingHorizontal: 6,
     margin: 4,
     borderRadius: 6,
     minHeight: 26,
@@ -82,7 +82,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignSelf: 'flex-start',
     flexDirection: 'row',
-    maxWidth: 120,
+    // maxWidthを削除
   },
   tagSelected: {
     backgroundColor: "#1E90FF",

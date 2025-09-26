@@ -1,4 +1,4 @@
-import { addData, updateData } from '@/data/sampleData';
+import { addData, deleteData, updateData } from '@/data/sampleData';
 import * as ImagePicker from 'expo-image-picker';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useMemo, useRef, useState } from 'react';
@@ -8,9 +8,12 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { sampleData } from "../data/sampleData"; //既存タグ取得用
 import { useTheme } from "./_layout";
 
+
+
 const screenWidth = Dimensions.get('window').width;
 
 const FormScreen = () => {
+  const [toast, setToast] = useState<string | null>(null);
   const router = useRouter();
   const params = useLocalSearchParams();   // ← これに統一
   const { theme } = useTheme();
@@ -34,6 +37,14 @@ const FormScreen = () => {
   const [photo, setPhoto] = useState(getString(params.photo) || null);
   const [id, setId] = useState(getString(params.id));
   const from = params.from ?? '';
+
+  // --- 削除 ---
+  const handleDelete = () => {
+    if (!id) return;
+    deleteData(id);
+    alert('削除しました');
+    router.back();
+  };
 
   // --- タグ候補 ---
   const existingTags = useMemo(() => {
@@ -83,15 +94,21 @@ const FormScreen = () => {
     console.log('保存データ:', data);
 
     if (from === '/details') {
-      // updateDataの引数順に合わせる
       updateData(id, title, tags, place, memo, price, link, photo);
-      alert('更新しました！');
+      showToast('更新しました！');
     } else {
-      // addDataの引数順に合わせる
       addData(title, tags, place, memo, price, link, photo);
-      alert('新規作成しました！');
+      showToast('新規作成しました！');
     }
-    router.back();
+    setTimeout(() => {
+      router.back();
+    }, 1000);
+  };
+
+  // トースト表示関数
+  const showToast = (msg: string) => {
+    setToast(msg);
+    setTimeout(() => setToast(null), 1000);
   };
 
   const handleBack = () => router.back();
@@ -109,6 +126,14 @@ const FormScreen = () => {
   // --- UI ---
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: theme.palette.background }]} edges={['top']}>
+      {/* トーストメッセージ（iOS用） */}
+      {toast && (
+        <View style={{ position: 'absolute', top: '50%', left: 0, right: 0, zIndex: 100, alignItems: 'center' }} pointerEvents="none">
+          <View style={{ backgroundColor: '#333', paddingHorizontal: 32, paddingVertical: 16, borderRadius: 24, opacity: 0.92 }}>
+            <Text style={{ color: '#fff', fontSize: 20, fontWeight: 'bold' }}>{toast}</Text>
+          </View>
+        </View>
+      )}
       {/* ヘッダー */}
       <View style={[styles.header, { backgroundColor: theme.palette.background }]}>
         <TouchableOpacity onPress={handleBack}>
@@ -238,7 +263,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingTop: 10,
-    paddingHorizontal: 8,
+    paddingHorizontal: 20, // ← 余白を広げる
     paddingBottom: 12,
     borderBottomWidth: 1,
     borderBottomColor: '#ddd',

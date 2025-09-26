@@ -28,6 +28,8 @@ const Layout = () => {
         "MPLUSRounded1c-Regular": require("../assets/fonts/MPLUSRounded1c-Regular.ttf"),
         "ZenKurenaido-Regular": require("../assets/fonts/ZenKurenaido-Regular.ttf"),
         "NewTegomin-Regular": require("../assets/fonts/NewTegomin-Regular.ttf"),
+        "ReggaeOne-Regular": require("../assets/fonts/ReggaeOne-Regular.ttf"),
+        "Stick-Regular": require("../assets/fonts/Stick-Regular.ttf"),
       });
       setLoaded(true);
     })();

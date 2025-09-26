@@ -143,22 +143,21 @@ export default function Details() {
             ))}
           </View>
 
-          {/* 住所 */}
-          <View style={{ flexDirection: 'row', alignItems: 'flex-start', marginBottom: 2, paddingHorizontal: 5 }}>
-            <Ionicons name="location" size={16} color={theme.palette.text} style={{ marginRight: 4 }} />
-            <Text style={{ fontSize: 14, color: theme.palette.text, fontFamily: theme.font }}>{item.place ?? ''}</Text>
+          <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 2, paddingHorizontal: 5 }}>
+            <Ionicons name="location" size={16} color={theme.palette.text} style={{ marginRight: 4, marginTop: 0, alignSelf: 'center' }} />
+            <Text style={{ fontSize: 14, color: theme.palette.text, fontFamily: theme.font, lineHeight: 18 }}>{item.place ?? ''}</Text>
           </View>
 
           {/* 価格 */}
           <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 2, paddingHorizontal: 5 }}>
-            <Ionicons name="cash-outline" size={16} color={theme.palette.text} style={{ marginRight: 4 }} />
-            <Text style={{ fontSize: 14, color: theme.palette.text, fontFamily: theme.font }}>{item.price ?? ''}</Text>
+            <Ionicons name="cash-outline" size={16} color={theme.palette.text} style={{ marginRight: 4, marginTop: 0, alignSelf: 'center' }} />
+            <Text style={{ fontSize: 14, color: theme.palette.text, fontFamily: theme.font, lineHeight: 18 }}>{item.price ?? ''}</Text>
           </View>
 
           {/* 日付 */}
           <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 8, paddingHorizontal: 5 }}>
-            <Ionicons name="calendar" size={16} color={theme.palette.text} style={{ marginRight: 4 }} />
-            <Text style={{ fontSize: 14, color: theme.palette.text, fontFamily: theme.font }}>{item.date ?? ''}</Text>
+            <Ionicons name="calendar" size={16} color={theme.palette.text} style={{ marginRight: 4, marginTop: 0, alignSelf: 'center' }} />
+            <Text style={{ fontSize: 14, color: theme.palette.text, fontFamily: theme.font, lineHeight: 18 }}>{item.date ?? ''}</Text>
           </View>
 
           {/* リンク */}
@@ -209,6 +208,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     padding: 10,
+    paddingHorizontal: 20, // ← 余白を広げる
     borderBottomWidth: 1,
     borderBottomColor: '#ddd',
   },
