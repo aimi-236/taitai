@@ -71,7 +71,7 @@ export let sampleData = [
   },
   {
     id: "6",
-    title: "東京ディズニーランド ハロウィンイベント",
+    title: "東京ディズニーランド",
     photo: "https://media2.tokyodisneyresort.jp/home/top/main/2025/06/mainL_01.jpg",
     place: "千葉県浦安市舞浜１−１",
     price: "20000〜40000",
@@ -183,7 +183,7 @@ export let sampleData = [
     id: "16",
     title: "千葉の観光",
     photo: "https://maruchiba.jp/lsc/upfile/spot/0001/0409/10409_1_l.jpg",
-    place: "千葉市中央区富士見2丁目3番1号塚本大千葉ビル9階長い住所",
+    place: "千葉市中央区富士見2丁目3番1号塚本大千葉ビル9階",
     price: "",
     link: "https://maruchiba.jp/spot/detail_10409.html",
     date: "2025-11-05",

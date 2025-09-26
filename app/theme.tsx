@@ -22,7 +22,9 @@ const fonts = [
   "KaiseiDecol-Regular",
   "MPLUSRounded1c-Regular",
   "ZenKurenaido-Regular",
-  "NewTegomin-Regular"
+  "NewTegomin-Regular",
+  "ReggaeOne-Regular",
+  "Stick-Regular"
 ];
 
 export default function ThemeScreen() {

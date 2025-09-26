@@ -122,16 +122,15 @@ export default function IndexScreen() {
                   {item.title}
                 </Text>
 
-                {/* 住所 */}
-                <View style={{ flexDirection: 'row', alignItems: 'flex-start', marginBottom: 2 }}>
-                  <Ionicons name="location" size={14} color={theme.palette.text} style={{ marginRight: 4, marginTop: 2 }} />
-                  <Text style={{ flex: 1, flexWrap: "wrap", color: theme.palette.text, fontFamily: theme.font }}>{item.place}</Text>
+                <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 2 }}>
+                  <Ionicons name="location" size={14} color={theme.palette.text} style={{ marginRight: 4, marginTop: 0, alignSelf: 'center' }} />
+                  <Text style={{ flex: 1, flexWrap: "wrap", color: theme.palette.text, fontFamily: theme.font, lineHeight: 18 }}>{item.place}</Text>
                 </View>
 
                 {/* 価格 */}
                 <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 2 }}>
-                  <Ionicons name="cash-outline" size={14} color={theme.palette.text} style={{ marginRight: 4 }} />
-                  <Text style={{ color: theme.palette.text, fontFamily: theme.font }}>{item.price}</Text>
+                  <Ionicons name="cash-outline" size={14} color={theme.palette.text} style={{ marginRight: 4, marginTop: 0, alignSelf: 'center' }} />
+                  <Text style={{ color: theme.palette.text, fontFamily: theme.font, lineHeight: 18 }}>{item.price}</Text>
                 </View>
 
                 {/* タグ */}
