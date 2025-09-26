@@ -114,6 +114,8 @@ const FormScreen = () => {
   const handleBack = () => router.back();
 
   const tagInputRef = useRef<TextInput>(null);
+  // Backspace検知用フラグ
+  const backspacePressedRef = useRef(false);
   const addTag = (tag: string) => {
     if (!tag.trim()) return;
     if (!tags.includes(tag)) {
@@ -182,21 +184,48 @@ const FormScreen = () => {
               <Text style={{ color: theme.palette.tagText, fontFamily: theme.font }}>#{tag}</Text>
             </View>
           ))}
+
           <TextInput
             ref={tagInputRef}
             style={[styles.tagTextInput, { color: theme.palette.text, fontFamily: theme.font }]}
             placeholder="タグを入力"
             placeholderTextColor="#888"
             value={tagInput}
-            onChangeText={setTagInput}
-            onSubmitEditing={() => addTag(tagInput)}
+            onChangeText={text => {
+              setTagInput(text);
+            }}
             onKeyPress={({ nativeEvent }) => {
-              if (nativeEvent.key === 'Backspace' && tagInput === '') {
-                setTags(tags.slice(0, -1));
+              if (nativeEvent.key === 'Backspace') {
+                if (tagInput === '' && tags.length > 0) {
+                  // 入力が空の状態でBackspace → 最後のタグを削除
+                  setTags(prev => prev.slice(0, -1));
+                }
               }
             }}
+            onSubmitEditing={() => addTag(tagInput)}
           />
+
         </View>
+        {/* タグ補完候補 */}
+        {suggestions.length > 0 && (
+          <View style={{ flexDirection: 'row', flexWrap: 'wrap', marginBottom: 8 }}>
+            {suggestions.map(s => (
+              <TouchableOpacity
+                key={s}
+                onPress={() => addTag(s)}
+                style={{
+                  backgroundColor: theme.palette.tagBg,
+                  borderRadius: 6,
+                  paddingVertical: 4,
+                  paddingHorizontal: 8,
+                  margin: 4,
+                }}
+              >
+                <Text style={{ color: theme.palette.tagText, fontFamily: theme.font }}>#{s}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        )}
 
         {/* 住所 */}
         <TextInput
