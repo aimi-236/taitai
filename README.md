@@ -1,50 +1,30 @@
-# Welcome to your Expo app 👋
+現在、bloomz-560mという完全無料でAPIキー不要のAIを使っています。 GPTなどの一般的な高精度AIは、APIキー(個人を識別するためのもの)の設定が必要で、さらに無料での利用制限が厳しいっため、手間やコストの観点から使用は難しいと判断しました。
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+コードはCopilotとやり取りして全部書いてもらいました。
+今使っているAIと、どのようにしてそのAIを利用しているかの説明をCopilotに書いてもらったものが以下です。
+  1. 使っているAI
+* Hugging Face（ハギングフェイス） というサービスの「bloomz-560m」という無料AIモデルを使っています。
+* これは「文章を要約したり、情報を抽出したりできるAI」です。
+* OpenAI（ChatGPTなど）と似ていますが、APIキー不要・無料で使えるのが特徴です。
 
-## Get started
+2. プログラムへの組み込み方法
+* React Native（スマホアプリ開発フレームワーク）の中で「fetch」という関数を使い、AIのAPI（インターネット上のAIサービス）にリクエストを送っています。
+* 具体的には、WebページのHTMLを取得し、その内容をAIに「こういう情報を抜き出して」と指示して送ります。
+* AIから返ってきた結果（JSON形式のテキスト）を、アプリの各入力欄（タイトル・詳細・タグなど）に自動でセットしています。
 
-1. Install dependencies
+3. AIへの指示の出し方（プロンプト）
+* AIには「プロンプト」と呼ばれる“お願い文”を送ります。
+* 例：  以下のHTMLから「タイトル」「タグ」「詳細」を日本語で抽出し、JSONで返してください。 - タイトルは15文字以内で自然な日本語で要約してください。 - 詳細は100文字以内で省略記号を使わず自然な文章にしてください。HTML:   （ここにWebページのHTMLが入る）
 
-   ```bash
-   npm install
-   ```
+* このように「どんな形式で、どんな条件で返してほしいか」を日本語で細かく指示しています。
 
-2. Start the app
 
-   ```bash
-   npx expo start
-   ```
+4. タグや画像の自動付与
+* タグは「既存タグ一覧」と、AIが抽出したタイトル・説明・見出し・URLを照合し、部分一致したものだけを自動で付けています。
+* 画像はWebページ内の画像タグやog:imageなどから、ロゴを除外し、なるべく内容に合った画像を自動で選んでいます。
 
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
-```
-
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
-
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+まとめ
+* 「Webページの内容をAIに要約・抽出してもらい、アプリの入力欄に自動で反映する」仕組みです。
+* すべて無料で使えるAIとAPIを利用し、ユーザーはボタン1つで自動入力ができます。
+* AIへのお願い（プロンプト）を工夫することで、より自然な日本語や適切な情報が得られるようにしています。
+ご不明点があれば、さらに詳しく解説します！
