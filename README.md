@@ -6,6 +6,9 @@
 
 タグ付けされたアイテムを登録し、検索・フィルタリング・ソート機能で簡単に探せます。テーマカラーとフォント選択で自分好みにカスタマイズできます。
 
+デモ動画はこちら↓
+https://drive.google.com/file/d/1T0ouBLMKMl6Pj-75xhVxG39rhszAS_sW/view?usp=share_link
+
 ### 🌟 主な機能
 
 - **📋 アイテム管理**
