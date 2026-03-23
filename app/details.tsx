@@ -116,7 +116,13 @@ export default function Details() {
 
         {/* 詳細スクロール部分 */}
         <ScrollView contentContainerStyle={styles.scrollContent}>
-          <Text style={[styles.title, { color: theme.palette.text, fontFamily: theme.font }]}>
+          <Text
+            style={[
+              styles.title,
+              { color: theme.palette.text, fontFamily: theme.font },
+              theme.font === 'System' ? { fontWeight: 'bold' } : { fontWeight: 'normal' }
+            ]}
+          >
             {item.title ?? ''}
           </Text>
 
@@ -127,30 +133,31 @@ export default function Details() {
                 key={i}
                 style={[
                   styles.tag,
-                  { backgroundColor: theme.palette.tagBg, color: theme.palette.tagText, fontFamily: theme.font }
+                  { backgroundColor: theme.palette.tagBg, color: theme.palette.tagText, fontFamily: theme.font, lineHeight: 18, minHeight: 26, overflow: 'hidden' }
                 ]}
+                numberOfLines={1}
+                ellipsizeMode="tail"
               >
                 #{tag}
               </Text>
             ))}
           </View>
 
-          {/* 住所 */}
-          <View style={{ flexDirection: 'row', alignItems: 'flex-start', marginBottom: 2, paddingHorizontal: 5 }}>
-            <Ionicons name="location" size={16} color={theme.palette.text} style={{ marginRight: 4 }} />
-            <Text style={{ fontSize: 14, color: theme.palette.text, fontFamily: theme.font }}>{item.place ?? ''}</Text>
+          <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 2, paddingHorizontal: 5 }}>
+            <Ionicons name="location" size={16} color={theme.palette.text} style={{ marginRight: 4, marginTop: 0, alignSelf: 'center' }} />
+            <Text style={{ fontSize: 14, color: theme.palette.text, fontFamily: theme.font, lineHeight: 18 }}>{item.place ?? ''}</Text>
           </View>
 
           {/* 価格 */}
           <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 2, paddingHorizontal: 5 }}>
-            <Ionicons name="cash-outline" size={16} color={theme.palette.text} style={{ marginRight: 4 }} />
-            <Text style={{ fontSize: 14, color: theme.palette.text, fontFamily: theme.font }}>{item.price ?? ''}</Text>
+            <Ionicons name="cash-outline" size={16} color={theme.palette.text} style={{ marginRight: 4, marginTop: 0, alignSelf: 'center' }} />
+            <Text style={{ fontSize: 14, color: theme.palette.text, fontFamily: theme.font, lineHeight: 18 }}>{item.price ?? ''}</Text>
           </View>
 
           {/* 日付 */}
           <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 8, paddingHorizontal: 5 }}>
-            <Ionicons name="calendar" size={16} color={theme.palette.text} style={{ marginRight: 4 }} />
-            <Text style={{ fontSize: 14, color: theme.palette.text, fontFamily: theme.font }}>{item.date ?? ''}</Text>
+            <Ionicons name="calendar" size={16} color={theme.palette.text} style={{ marginRight: 4, marginTop: 0, alignSelf: 'center' }} />
+            <Text style={{ fontSize: 14, color: theme.palette.text, fontFamily: theme.font, lineHeight: 18 }}>{item.date ?? ''}</Text>
           </View>
 
           {/* リンク */}
@@ -173,7 +180,15 @@ export default function Details() {
 
           {/* 詳細 */}
           <View style={styles.detailHeader}>
-            <Text style={[styles.detailTitle, { color: theme.palette.text, fontFamily: theme.font }]}>詳細</Text>
+            <Text
+              style={[
+                styles.detailTitle,
+                { color: theme.palette.text, fontFamily: theme.font },
+                theme.font === 'System' ? { fontWeight: 'bold' } : { fontWeight: 'normal' }
+              ]}
+            >
+              詳細
+            </Text>
             <View style={styles.detailLine} />
           </View>
           <Text style={[styles.text, { color: theme.palette.text, fontFamily: theme.font }]}>
@@ -193,6 +208,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     padding: 10,
+    paddingHorizontal: 20, // ← 余白を広げる
     borderBottomWidth: 1,
     borderBottomColor: '#ddd',
   },
@@ -210,6 +226,9 @@ const styles = StyleSheet.create({
     marginRight: 8,
     borderRadius: 6,
     fontSize: 14,
+    lineHeight: 18,
+    minHeight: 26,
+    overflow: 'hidden',
     shadowColor: '#000',
     shadowOpacity: 0.1,
     shadowOffset: { width: 1, height: 1 },

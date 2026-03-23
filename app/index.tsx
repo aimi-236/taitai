@@ -76,7 +76,13 @@ export default function IndexScreen() {
               placeholderTextColor="#888"
               value={query}
               onChangeText={setQuery}
-              style={{ paddingVertical: 2, fontSize: 16, color: theme.palette.text, fontFamily: theme.font }}
+              style={{
+                paddingVertical: 0,
+                fontSize: 14,
+                color: theme.palette.text,
+                fontFamily: theme.font,
+                height: 20,
+              }}
             />
           </View>
 
@@ -106,18 +112,25 @@ export default function IndexScreen() {
               <Image source={typeof item.photo === "number" ? item.photo : { uri: item.photo }} style={styles.photo} />
               <View style={styles.info}>
                 {/* タイトル */}
-                <Text style={[styles.title, { color: theme.palette.text, fontFamily: theme.font }]}>{item.title}</Text>
+                <Text
+                  style={[
+                    styles.title,
+                    { color: theme.palette.text, fontFamily: theme.font },
+                    theme.font === 'System' ? { fontWeight: 'bold' } : { fontWeight: 'normal' }
+                  ]}
+                >
+                  {item.title}
+                </Text>
 
-                {/* 住所 */}
-                <View style={{ flexDirection: 'row', alignItems: 'flex-start', marginBottom: 2 }}>
-                  <Ionicons name="location" size={14} color={theme.palette.text} style={{ marginRight: 4, marginTop: 2 }} />
-                  <Text style={{ flex: 1, flexWrap: "wrap", color: theme.palette.text, fontFamily: theme.font }}>{item.place}</Text>
+                <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 2 }}>
+                  <Ionicons name="location" size={14} color={theme.palette.text} style={{ marginRight: 4, marginTop: 0, alignSelf: 'center' }} />
+                  <Text style={{ flex: 1, flexWrap: "wrap", color: theme.palette.text, fontFamily: theme.font, lineHeight: 18 }}>{item.place}</Text>
                 </View>
 
                 {/* 価格 */}
                 <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 2 }}>
-                  <Ionicons name="cash-outline" size={14} color={theme.palette.text} style={{ marginRight: 4 }} />
-                  <Text style={{ color: theme.palette.text, fontFamily: theme.font }}>{item.price}</Text>
+                  <Ionicons name="cash-outline" size={14} color={theme.palette.text} style={{ marginRight: 4, marginTop: 0, alignSelf: 'center' }} />
+                  <Text style={{ color: theme.palette.text, fontFamily: theme.font, lineHeight: 18 }}>{item.price}</Text>
                 </View>
 
                 {/* タグ */}
@@ -127,8 +140,10 @@ export default function IndexScreen() {
                       key={i}
                       style={[
                         styles.tag,
-                        { backgroundColor: theme.palette.tagBg, color: theme.palette.tagText, fontFamily: theme.font }
+                        { backgroundColor: theme.palette.tagBg, color: theme.palette.tagText, fontFamily: theme.font, lineHeight: 18, minHeight: 26, overflow: 'hidden' }
                       ]}
+                      numberOfLines={1}
+                      ellipsizeMode="tail"
                     >
                       #{tag}
                     </Text>
@@ -149,7 +164,7 @@ const styles = StyleSheet.create({
   container: { flex: 1 },
   header: { flexDirection: "row", padding: 10, alignItems: "center" },
   button: { marginHorizontal: 5, padding: 5, backgroundColor: "#eee", borderRadius: 5 },
-  searchBox: { flex: 1, backgroundColor: "#f0f0f0", padding: 5, marginHorizontal: 5, borderRadius: 6 },
+  searchBox: { flex: 1, backgroundColor: "#f0f0f0", padding: 5, marginHorizontal: 5, borderRadius: 6, height: 30, justifyContent: 'center' },
   card: { flexDirection: "row", padding: 10, borderBottomWidth: 1, borderColor: "#ddd", alignItems: "center" },
   photo: { width: 85, height: 85, marginRight: 12, borderRadius: 8, resizeMode: "cover" },
   info: { flex: 1 },
@@ -160,6 +175,9 @@ const styles = StyleSheet.create({
     marginRight: 8,
     borderRadius: 6,
     fontSize: 12,
+    lineHeight: 18,
+    minHeight: 26,
+    overflow: 'hidden',
   },
   tagsContainer: { flexDirection: 'row', flexWrap: 'wrap', marginTop: 4, rowGap: 8 },
 });

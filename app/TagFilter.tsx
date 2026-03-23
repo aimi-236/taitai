@@ -52,8 +52,13 @@ const TagFilter: React.FC<Props> = ({ allItems, onChangeSelected }) => {
               selected.includes(tag) && { borderWidth: 2, borderColor: theme.palette.tagText }
             ]}
             onPress={() => toggleTag(tag)}
+            activeOpacity={0.7}
           >
-            <Text style={{ color: theme.palette.tagText, fontSize: 14, fontFamily: theme.font }}>
+            <Text
+              style={{ color: theme.palette.tagText, fontSize: 14, fontFamily: theme.font, lineHeight: 18, textAlign: 'center' }}
+              numberOfLines={1}
+              ellipsizeMode="tail"
+            >
               #{tag} ({count})
             </Text>
           </TouchableOpacity>
@@ -69,9 +74,15 @@ const styles = StyleSheet.create({
   tag: {
     backgroundColor: "#eee",
     paddingVertical: 4,
-    paddingHorizontal: 8,
+    paddingHorizontal: 6,
     margin: 4,
     borderRadius: 6,
+    minHeight: 26,
+    alignItems: 'center',
+    justifyContent: 'center',
+    alignSelf: 'flex-start',
+    flexDirection: 'row',
+    // maxWidthを削除
   },
   tagSelected: {
     backgroundColor: "#1E90FF",
